@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management Dashboard - St. Seraphina's</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #a8a8a8;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Modal transitions */
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        
+        .hidden-modal {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .visible-modal {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content-transform {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <div class="hidden md:flex flex-col w-64 bg-white shadow-lg">
+            <div class="flex items-center justify-center h-20 shadow-md">
+                <h1 class="text-2xl font-bold text-blue-600">St. Seraphina's</h1>
+            </div>
+            <nav class="flex-1 px-2 py-4 space-y-2">
+                
+                <p class="px-4 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Pharmacy</p>
+                <a href="#" data-tab="pharmacy_overview" class="sidebar-link flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                     <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    Overview
+                </a>
+                <a href="#" data-tab="inventory" class="sidebar-link flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                     <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Inventory
+                </a>
+                <a href="#" data-tab="prescriptions" class="sidebar-link flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                     <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Prescriptions
+                </a>
+                 <a href="#" data-tab="suppliers" class="sidebar-link flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                     <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Suppliers
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 mt-auto text-gray-600 hover:bg-red-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex flex-col flex-1 overflow-y-auto">
+            <div class="flex items-center justify-between h-20 bg-white shadow-md px-6">
+                <h1 id="header-title" class="text-2xl font-semibold text-gray-800">Hospital Dashboard</h1>
+                <span class="text-gray-600">Welcome, Staff!</span>
+            </div>
+
+            <div class="p-6">
+                <div id="tabs-container"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- All Modals -->
+    <!-- Add/Edit Invoice Modal -->
+    <div id="invoice-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform">
+            <h2 id="invoice-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Create New Invoice</h2>
+            <form id="invoice-form">
+                <div class="space-y-4">
+                    <div><label for="invoiceId" class="block text-sm font-medium text-gray-700">Invoice ID</label><input type="text" id="invoiceId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div>
+                    <div><label for="patientName" class="block text-sm font-medium text-gray-700">Patient Name</label><input type="text" id="patientName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div>
+                    <div><label for="amount" class="block text-sm font-medium text-gray-700">Amount (₹)</label><input type="number" id="amount" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div>
+                    <div><label for="dueDate" class="block text-sm font-medium text-gray-700">Due Date</label><input type="date" id="dueDate" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div>
+                    <div><label for="status" class="block text-sm font-medium text-gray-700">Status</label><select id="status" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required><option value="Pending">Pending</option><option value="Paid">Paid</option><option value="Overdue">Overdue</option></select></div>
+                </div>
+                <div class="mt-8 pt-6 border-t flex justify-end space-x-3"><button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Invoice</button></div>
+            </form>
+        </div>
+    </div>
+    <!-- Add/Edit Payment Modal -->
+    <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform">
+            <h2 id="payment-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Record New Payment</h2>
+            <form id="payment-form">
+                <div class="space-y-4">
+                    <div><label for="transactionId" class="block text-sm font-medium text-gray-700">Transaction ID</label><input type="text" id="transactionId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div>
+                    <div><label for="paymentPatientName" class="block text-sm font-medium text-gray-700">Patient Name</label><input type="text" id="paymentPatientName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div>
+                    <div><label for="paymentInvoiceId" class="block text-sm font-medium text-gray-700">Invoice ID</label><input type="text" id="paymentInvoiceId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div>
+                    <div><label for="paymentAmount" class="block text-sm font-medium text-gray-700">Amount (₹)</label><input type="number" id="paymentAmount" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div>
+                    <div><label for="date" class="block text-sm font-medium text-gray-700">Payment Date</label><input type="date" id="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div>
+                    <div><label for="method" class="block text-sm font-medium text-gray-700">Payment Method</label><select id="method" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required><option>Credit Card</option><option>Bank Transfer</option><option>UPI</option><option>Cash</option></select></div>
+                    <div><label for="paymentStatus" class="block text-sm font-medium text-gray-700">Status</label><select id="paymentStatus" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required><option value="Success">Success</option><option value="Failed">Failed</option><option value="Pending">Pending</option></select></div>
+                </div>
+                <div class="mt-8 pt-6 border-t flex justify-end space-x-3"><button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Payment</button></div>
+            </form>
+        </div>
+    </div>
+    <!-- Pharmacy: Medicine Modal -->
+    <div id="pharm-medicine-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform">
+            <h2 id="pharm-medicine-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Add New Medicine</h2>
+            <form id="pharm-medicine-form">
+                <div class="space-y-4">
+                    <input type="hidden" id="pharm-medicine-id-hidden">
+                    <div><label for="pharm-name" class="block text-sm font-medium text-gray-700">Medicine Name</label><input type="text" id="pharm-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div>
+                    <div><label for="pharm-qty" class="block text-sm font-medium text-gray-700">Quantity</label><input type="number" id="pharm-qty" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div>
+                    <div><label for="pharm-expiry" class="block text-sm font-medium text-gray-700">Expiry Date</label><input type="date" id="pharm-expiry" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div>
+                </div>
+                <div class="mt-8 pt-6 border-t flex justify-end space-x-3"><button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Medicine</button></div>
+            </form>
+        </div>
+    </div>
+    <!-- Pharmacy: Supplier Modal -->
+    <div id="pharm-supplier-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform">
+            <h2 id="pharm-supplier-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Add New Supplier</h2>
+            <form id="pharm-supplier-form">
+                <div class="space-y-4">
+                    <div><label for="pharm-supplier-id" class="block text-sm font-medium text-gray-700">Supplier ID</label><input type="text" id="pharm-supplier-id" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div>
+                    <div><label for="pharm-companyName" class="block text-sm font-medium text-gray-700">Company Name</label><input type="text" id="pharm-companyName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div>
+                    <div><label for="pharm-contactPerson" class="block text-sm font-medium text-gray-700">Contact Person</label><input type="text" id="pharm-contactPerson" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div>
+                    <div><label for="pharm-phone" class="block text-sm font-medium text-gray-700">Phone</label><input type="tel" id="pharm-phone" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div>
+                    <div><label for="pharm-medicines" class="block text-sm font-medium text-gray-700">Medicines Provided (comma-separated)</label><textarea id="pharm-medicines" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"></textarea></div>
+                </div>
+                <div class="mt-8 pt-6 border-t flex justify-end space-x-3"><button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Supplier</button></div>
+            </form>
+        </div>
+    </div>
+     <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md p-6 modal-content modal-content-transform">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Are you sure?</h2>
+            <p id="confirmation-message" class="text-gray-600 mb-6">This action cannot be undone.</p>
+            <div class="flex justify-end space-x-3"><button id="confirm-cancel-btn" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button id="confirm-action-btn" class="bg-red-600 text-white font-bold py-2 px-4 rounded-md hover:bg-red-700">Delete</button></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // --- UNIFIED STATE MANAGEMENT ---
+            const STORAGE_KEY = 'hospital_management_app_state_v1';
+
+            const defaultState = {
+                billing: {
+                    metrics: { revenue: 4500000, outstanding: 850000, invoicesToday: 32, paidToday: 210000 },
+                    invoices: [
+                        { invoiceId: "INV-2025-08-001", patientName: "Rohan Verma", amount: 15000, dueDate: "2025-09-10", status: "Paid" },
+                        { invoiceId: "INV-2025-08-002", patientName: "Sunita Patil", amount: 7500, dueDate: "2025-09-12", status: "Overdue" },
+                    ],
+                    payments: [
+                        { transactionId: "TXN-00125", patientName: "Rohan Verma", invoiceId: "INV-2025-08-001", amount: 15000, date: "2025-08-25", method: "Credit Card", status: "Success" }
+                    ]
+                },
+                pharmacy: {
+                    metrics: { totalMedicines: 0, lowStock: 0, expired: 0, newPrescriptions: 0 },
+                    medicines: [
+                        { id: 1, name: 'Paracetamol', qty: 100, expiry: '2025-12-31' },
+                        { id: 2, name: 'Amoxicillin', qty: 8, expiry: '2026-06-15' }
+                    ],
+                    prescriptions: [{ id: 'PRESC-001', patient: 'Rohan Verma', doctor: 'Dr. Anjali Rao', date: '2025-08-26', status: 'Pending', medicines: [] }],
+                    suppliers: [{ supplierId: 'SUP-001', companyName: 'Pharma Solutions Inc.', contactPerson: 'Mr. Sharma', phone: '+91 9988776655', medicines: ['Paracetamol'] }]
+                }
+            };
+
+            let state = loadState();
+
+            function saveState() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                } catch (e) { console.warn('Could not save state:', e); }
+            }
+
+            function loadState() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultState));
+                } catch (e) {
+                    console.warn('Failed to parse state, using defaults:', e);
+                    return JSON.parse(JSON.stringify(defaultState));
+                }
+            }
+            
+            // --- UI TAB & NAVIGATION MANAGEMENT ---
+            function showTab(tabName) {
+                const allTabs = ['dashboard', 'billing_overview', 'invoices', 'payments', 'pharmacy_overview', 'inventory', 'prescriptions', 'suppliers'];
+                const headerTitles = {
+                    dashboard: 'Hospital Dashboard',
+                    billing_overview: 'Billing Overview',
+                    invoices: 'Manage Invoices',
+                    payments: 'Payment History',
+                    pharmacy_overview: 'Pharmacy Overview',
+                    inventory: 'Manage Inventory',
+                    prescriptions: 'Manage Prescriptions',
+                    suppliers: 'Manage Suppliers'
+                };
+
+                allTabs.forEach(t => {
+                    const el = document.getElementById(`tab-${t}`);
+                    if (el) el.classList.toggle('hidden', t !== tabName);
+                });
+                
+                document.getElementById('header-title').textContent = headerTitles[tabName] || 'Dashboard';
+                
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    const isActive = link.dataset.tab === tabName;
+                    link.classList.toggle('bg-gray-200', isActive);
+                    link.classList.toggle('text-gray-700', isActive);
+                    link.classList.toggle('text-gray-600', !isActive);
+                    link.classList.toggle('hover:bg-gray-200', !isActive);
+                });
+
+                localStorage.setItem('active_hospital_tab', tabName);
+            }
+
+            // --- RENDER FUNCTIONS ---
+            function getStatusBadge(status) {
+                const styles = { 'Paid': 'bg-green-200 text-green-800', 'Pending': 'bg-yellow-200 text-yellow-800', 'Overdue': 'bg-red-200 text-red-800', 'Success': 'bg-green-200 text-green-800', 'Failed': 'bg-red-200 text-red-800', 'Filled': 'bg-green-200 text-green-800'};
+                return `<span class="${styles[status] || 'bg-gray-200 text-gray-800'} py-1 px-3 rounded-full text-xs font-medium">${status}</span>`;
+            }
+
+            function renderAll() {
+                // Billing renders
+                renderBillingOverview();
+                renderInvoicesTable(state.billing.invoices);
+                renderPaymentsTable(state.billing.payments);
+                // Pharmacy renders
+                renderPharmacyMetrics();
+                renderMedicinesTable(state.pharmacy.medicines);
+                renderPrescriptionsTable(state.pharmacy.prescriptions);
+                renderSuppliersTable(state.pharmacy.suppliers);
+            }
+
+            function renderBillingOverview() {
+                const { revenue, outstanding, invoicesToday, paidToday } = state.billing.metrics;
+                document.getElementById('metric-revenue').textContent = `₹${revenue.toLocaleString('en-IN')}`;
+                document.getElementById('metric-outstanding').textContent = `₹${outstanding.toLocaleString('en-IN')}`;
+                document.getElementById('metric-invoices-today').textContent = invoicesToday;
+                document.getElementById('metric-paid-today').textContent = `₹${paidToday.toLocaleString('en-IN')}`;
+            }
+
+            function renderInvoicesTable(list) {
+                const tbody = document.getElementById('invoices-tbody');
+                tbody.innerHTML = list.map(inv => `
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-3 px-4 border-b border-gray-200">${inv.invoiceId}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${inv.patientName}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">₹${inv.amount.toLocaleString('en-IN')}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${inv.dueDate}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${getStatusBadge(inv.status)}</td>
+                        <td class="py-3 px-4 border-b border-gray-200 space-x-2">
+                            <button class="edit-invoice-btn text-blue-500 hover:underline" data-id="${inv.invoiceId}">Edit</button>
+                            <button class="delete-invoice-btn text-red-500 hover:underline" data-id="${inv.invoiceId}">Delete</button>
+                        </td>
+                    </tr>`).join('') || '<tr><td colspan="6" class="text-center text-gray-500 py-4">No invoices found</td></tr>';
+            }
+
+            function renderPaymentsTable(list) {
+                const tbody = document.getElementById('payments-tbody');
+                tbody.innerHTML = list.map(p => `
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-3 px-4 border-b border-gray-200">${p.transactionId}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.patientName}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.invoiceId}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">₹${p.amount.toLocaleString('en-IN')}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.date}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.method}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${getStatusBadge(p.status)}</td>
+                        <td class="py-3 px-4 border-b border-gray-200 space-x-2">
+                            <button class="edit-payment-btn text-blue-500 hover:underline" data-id="${p.transactionId}">Edit</button>
+                            <button class="delete-payment-btn text-red-500 hover:underline" data-id="${p.transactionId}">Delete</button>
+                        </td>
+                    </tr>`).join('') || '<tr><td colspan="8" class="text-center text-gray-500 py-4">No payments found</td></tr>';
+            }
+            
+            function renderPharmacyMetrics() {
+                const { medicines, prescriptions } = state.pharmacy;
+                document.querySelector('[data-metric="totalMedicines"]').textContent = medicines.length;
+                document.querySelector('[data-metric="lowStock"]').textContent = medicines.filter(m => m.qty < 10).length;
+                document.querySelector('[data-metric="expired"]').textContent = medicines.filter(m => new Date(m.expiry) < new Date()).length;
+                document.querySelector('[data-metric="newPrescriptions"]').textContent = prescriptions.filter(p => p.status === 'Pending').length;
+            }
+
+            function renderMedicinesTable(list) {
+                 const tbody = document.getElementById('inventory-tbody');
+                 tbody.innerHTML = list.map(m => `
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-3 px-4 border-b border-gray-200">${m.name}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${m.qty}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${m.expiry}</td>
+                        <td class="py-3 px-4 border-b border-gray-200 space-x-2">
+                            <button class="edit-medicine-btn text-blue-500 hover:underline" data-id="${m.id}">Edit</button>
+                            <button class="delete-medicine-btn text-red-500 hover:underline" data-id="${m.id}">Delete</button>
+                        </td>
+                    </tr>`).join('') || '<tr><td colspan="4" class="text-center text-gray-500 py-4">No medicines found</td></tr>';
+            }
+             function renderPrescriptionsTable(list) {
+                const tbody = document.getElementById('prescriptions-tbody');
+                tbody.innerHTML = list.map(p => `
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-3 px-4 border-b border-gray-200">${p.id}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.patient}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.doctor}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.date}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${getStatusBadge(p.status)}</td>
+                        <td class="py-3 px-4 border-b border-gray-200 space-x-2">
+                             <button class="edit-prescription-btn text-blue-500 hover:underline" data-id="${p.id}">Edit</button>
+                            <button class="delete-prescription-btn text-red-500 hover:underline" data-id="${p.id}">Delete</button>
+                        </td>
+                    </tr>`).join('') || '<tr><td colspan="6" class="text-center text-gray-500 py-4">No prescriptions found</td></tr>';
+            }
+            function renderSuppliersTable(list) {
+                const tbody = document.getElementById('suppliers-tbody');
+                tbody.innerHTML = list.map(s => `
+                     <tr class="hover:bg-gray-50">
+                        <td class="py-3 px-4 border-b border-gray-200">${s.supplierId}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${s.companyName}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${s.contactPerson}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${s.phone}</td>
+                        <td class="py-3 px-4 border-b border-gray-200 space-x-2">
+                            <button class="edit-supplier-btn text-blue-500 hover:underline" data-id="${s.supplierId}">Edit</button>
+                            <button class="delete-supplier-btn text-red-500 hover:underline" data-id="${s.supplierId}">Delete</button>
+                        </td>
+                    </tr>`).join('') || '<tr><td colspan="5" class="text-center text-gray-500 py-4">No suppliers found</td></tr>';
+            }
+
+
+            // --- MODAL & CONFIRMATION MANAGEMENT ---
+            function openModal(modalId, data = null) {
+                const modal = document.getElementById(modalId);
+                const form = modal.querySelector('form');
+                if (form) form.reset();
+
+                if (modalId === 'invoice-modal') {
+                    document.getElementById('invoice-modal-title').textContent = data ? 'Edit Invoice' : 'Create New Invoice';
+                    document.getElementById('invoiceId').disabled = !!data;
+                    document.getElementById('invoiceId').value = data ? data.invoiceId : `INV-${Date.now()}`;
+                    if(data) {
+                        document.getElementById('patientName').value = data.patientName;
+                        document.getElementById('amount').value = data.amount;
+                        document.getElementById('dueDate').value = data.dueDate;
+                        document.getElementById('status').value = data.status;
+                    }
+                } else if (modalId === 'payment-modal') {
+                     document.getElementById('payment-modal-title').textContent = data ? 'Edit Payment Record' : 'Record New Payment';
+                     document.getElementById('transactionId').disabled = !!data;
+                     document.getElementById('transactionId').value = data ? data.transactionId : `TXN-${Date.now()}`;
+                     document.getElementById('date').value = data ? data.date : new Date().toISOString().slice(0, 10);
+                      if(data) {
+                         document.getElementById('paymentPatientName').value = data.patientName;
+                         document.getElementById('paymentInvoiceId').value = data.invoiceId;
+                         document.getElementById('paymentAmount').value = data.amount;
+                         document.getElementById('method').value = data.method;
+                         document.getElementById('paymentStatus').value = data.status;
+                     }
+                } else if (modalId === 'pharm-medicine-modal') {
+                    document.getElementById('pharm-medicine-modal-title').textContent = data ? 'Edit Medicine' : 'Add New Medicine';
+                    document.getElementById('pharm-medicine-id-hidden').value = data ? data.id : '';
+                    if(data){
+                        document.getElementById('pharm-name').value = data.name;
+                        document.getElementById('pharm-qty').value = data.qty;
+                        document.getElementById('pharm-expiry').value = data.expiry;
+                    }
+                } else if (modalId === 'pharm-supplier-modal') {
+                    document.getElementById('pharm-supplier-modal-title').textContent = data ? 'Edit Supplier' : 'Add New Supplier';
+                    document.getElementById('pharm-supplier-id').disabled = !!data;
+                    document.getElementById('pharm-supplier-id').value = data ? data.supplierId : `SUP-${Date.now()}`;
+                    if(data){
+                         document.getElementById('pharm-companyName').value = data.companyName;
+                        document.getElementById('pharm-contactPerson').value = data.contactPerson;
+                        document.getElementById('pharm-phone').value = data.phone;
+                        document.getElementById('pharm-medicines').value = data.medicines.join(', ');
+                    }
+                }
+
+                modal.classList.remove('hidden-modal');
+                setTimeout(() => {
+                    modal.querySelector('.modal-content').classList.remove('modal-content-transform');
+                    modal.classList.add('visible-modal');
+                }, 10);
+            }
+
+            function closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if(!modal) return;
+                modal.querySelector('.modal-content').classList.add('modal-content-transform');
+                modal.classList.remove('visible-modal');
+                setTimeout(() => modal.classList.add('hidden-modal'), 300);
+            }
+
+            function showConfirmationModal(message, onConfirm) {
+                 const modal = document.getElementById('confirmation-modal');
+                 document.getElementById('confirmation-message').textContent = message;
+                 const confirmBtn = document.getElementById('confirm-action-btn');
+                 const newConfirmBtn = confirmBtn.cloneNode(true); // Remove old listeners
+                 confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+                 newConfirmBtn.addEventListener('click', () => { onConfirm(); closeModal('confirmation-modal'); });
+                 document.getElementById('confirm-cancel-btn').onclick = () => closeModal('confirmation-modal');
+                 openModal('confirmation-modal');
+            }
+
+            // --- MOUNTING UI & EVENT WIRING ---
+            function mountSections() {
+                const container = document.getElementById('tabs-container');
+                container.innerHTML = `
+                    <!-- Main Dashboard -->
+                    <div id="tab-dashboard">
+                         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Welcome to St. Seraphina's Hospital Portal</h2>
+                         <p class="text-gray-600">Select a module from the sidebar to manage Billing or Pharmacy.</p>
+                    </div>
+                    <!-- Billing Sections -->
+                    <div id="tab-billing_overview" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Total Revenue</h3><p id="metric-revenue" class="text-3xl font-bold text-green-600">₹0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Outstanding</h3><p id="metric-outstanding" class="text-3xl font-bold text-red-600">₹0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Invoices Today</h3><p id="metric-invoices-today" class="text-3xl font-bold text-blue-600">0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Paid Today</h3><p id="metric-paid-today" class="text-3xl font-bold text-purple-600">₹0</p></div></div></div>
+                    <div id="tab-invoices" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Invoices</h3><div class="flex items-center space-x-4 w-full md:w-auto"><input id="search-invoices" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"><button id="create-invoice-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Create Invoice</button></div></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">Invoice ID</th><th class="py-3 px-4 border-b-2">Patient</th><th class="py-3 px-4 border-b-2">Amount</th><th class="py-3 px-4 border-b-2">Due Date</th><th class="py-3 px-4 border-b-2">Status</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="invoices-tbody"></tbody></table></div></div></div>
+                    <div id="tab-payments" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Payments</h3><div class="flex items-center space-x-4 w-full md:w-auto"><input id="search-payments" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"><button id="record-payment-btn" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Record Payment</button></div></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">Transaction ID</th><th class="py-3 px-4 border-b-2">Patient</th><th class="py-3 px-4 border-b-2">Invoice ID</th><th class="py-3 px-4 border-b-2">Amount</th><th class="py-3 px-4 border-b-2">Date</th><th class="py-3 px-4 border-b-2">Method</th><th class="py-3 px-4 border-b-2">Status</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="payments-tbody"></tbody></table></div></div></div>
+                    <!-- Pharmacy Sections -->
+                    <div id="tab-pharmacy_overview" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Total Medicines</h3><p class="text-3xl font-bold text-blue-600" data-metric="totalMedicines">0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Low Stock</h3><p class="text-3xl font-bold text-yellow-600" data-metric="lowStock">0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Expired</h3><p class="text-3xl font-bold text-red-600" data-metric="expired">0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">New Prescriptions</h3><p class="text-3xl font-bold text-green-600" data-metric="newPrescriptions">0</p></div></div></div>
+                    <div id="tab-inventory" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Medicines</h3><div class="flex items-center space-x-4 w-full md:w-auto"><input id="search-inventory" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md"><button id="create-medicine-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Add Medicine</button></div></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">Name</th><th class="py-3 px-4 border-b-2">Quantity</th><th class="py-3 px-4 border-b-2">Expiry</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="inventory-tbody"></tbody></table></div></div></div>
+                    <div id="tab-prescriptions" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md">Prescriptions Content</div></div>
+                    <div id="tab-suppliers" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Suppliers</h3><div class="flex items-center space-x-4 w-full md:w-auto"><input id="search-suppliers" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md"><button id="create-supplier-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Add Supplier</button></div></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">ID</th><th class="py-3 px-4 border-b-2">Company</th><th class="py-3 px-4 border-b-2">Contact</th><th class="py-3 px-4 border-b-2">Phone</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="suppliers-tbody"></tbody></table></div></div></div>
+                 `;
+            }
+
+            function wireUI() {
+                // Sidebar Navigation
+                document.querySelector('nav').addEventListener('click', e => {
+                    const link = e.target.closest('.sidebar-link');
+                    if(link && link.dataset.tab) { e.preventDefault(); showTab(link.dataset.tab); }
+                });
+
+                // --- Billing Event Listeners ---
+                document.getElementById('search-invoices').addEventListener('input', e => renderInvoicesTable(state.billing.invoices.filter(i => i.invoiceId.toLowerCase().includes(e.target.value.toLowerCase()) || i.patientName.toLowerCase().includes(e.target.value.toLowerCase()))));
+                document.getElementById('search-payments').addEventListener('input', e => renderPaymentsTable(state.billing.payments.filter(p => p.transactionId.toLowerCase().includes(e.target.value.toLowerCase()) || p.patientName.toLowerCase().includes(e.target.value.toLowerCase()))));
+                document.getElementById('create-invoice-btn').addEventListener('click', () => openModal('invoice-modal'));
+                document.getElementById('record-payment-btn').addEventListener('click', () => openModal('payment-modal'));
+                
+                document.getElementById('invoices-tbody').addEventListener('click', e => {
+                    const id = e.target.dataset.id; if (!id) return;
+                    if (e.target.classList.contains('edit-invoice-btn')) openModal('invoice-modal', state.billing.invoices.find(i => i.invoiceId === id));
+                    if (e.target.classList.contains('delete-invoice-btn')) showConfirmationModal(`Delete invoice ${id}?`, () => { state.billing.invoices = state.billing.invoices.filter(i => i.invoiceId !== id); saveState(); renderInvoicesTable(state.billing.invoices); });
+                });
+                 document.getElementById('payments-tbody').addEventListener('click', e => {
+                    const id = e.target.dataset.id; if (!id) return;
+                    if (e.target.classList.contains('edit-payment-btn')) openModal('payment-modal', state.billing.payments.find(p => p.transactionId === id));
+                    if (e.target.classList.contains('delete-payment-btn')) showConfirmationModal(`Delete transaction ${id}?`, () => { state.billing.payments = state.billing.payments.filter(p => p.transactionId !== id); saveState(); renderPaymentsTable(state.billing.payments); });
+                });
+
+                document.getElementById('invoice-form').addEventListener('submit', e => { e.preventDefault(); const id = document.getElementById('invoiceId').value; const isEditing = document.getElementById('invoiceId').disabled; const data = { invoiceId: id, patientName: document.getElementById('patientName').value, amount: parseInt(document.getElementById('amount').value), dueDate: document.getElementById('dueDate').value, status: document.getElementById('status').value }; if(isEditing){ const i=state.billing.invoices.findIndex(x=>x.invoiceId===id); state.billing.invoices[i]=data; }else{ state.billing.invoices.push(data); } saveState(); renderInvoicesTable(state.billing.invoices); closeModal('invoice-modal'); });
+                document.getElementById('payment-form').addEventListener('submit', e => { e.preventDefault(); const id = document.getElementById('transactionId').value; const isEditing = document.getElementById('transactionId').disabled; const data = { transactionId: id, patientName: document.getElementById('paymentPatientName').value, invoiceId: document.getElementById('paymentInvoiceId').value, amount: parseInt(document.getElementById('paymentAmount').value), date: document.getElementById('date').value, method: document.getElementById('method').value, status: document.getElementById('paymentStatus').value }; if(isEditing){ const i=state.billing.payments.findIndex(x=>x.transactionId===id); state.billing.payments[i]=data; }else{ state.billing.payments.push(data); } saveState(); renderPaymentsTable(state.billing.payments); closeModal('payment-modal'); });
+               
+               // --- Pharmacy Event Listeners ---
+                document.getElementById('search-inventory').addEventListener('input', e => renderMedicinesTable(state.pharmacy.medicines.filter(m => m.name.toLowerCase().includes(e.target.value.toLowerCase()))));
+                document.getElementById('create-medicine-btn').addEventListener('click', () => openModal('pharm-medicine-modal'));
+                document.getElementById('inventory-tbody').addEventListener('click', e => {
+                    const id = e.target.dataset.id; if (!id) return;
+                    if (e.target.classList.contains('edit-medicine-btn')) openModal('pharm-medicine-modal', state.pharmacy.medicines.find(m => m.id == id));
+                    if (e.target.classList.contains('delete-medicine-btn')) showConfirmationModal(`Delete this medicine?`, () => { state.pharmacy.medicines = state.pharmacy.medicines.filter(m => m.id != id); saveState(); renderAll(); });
+                });
+                document.getElementById('pharm-medicine-form').addEventListener('submit', e => { e.preventDefault(); const id=document.getElementById('pharm-medicine-id-hidden').value; const data={id:id||Date.now(), name:document.getElementById('pharm-name').value, qty:parseInt(document.getElementById('pharm-qty').value), expiry:document.getElementById('pharm-expiry').value}; if(id){const i=state.pharmacy.medicines.findIndex(m=>m.id==id); state.pharmacy.medicines[i]=data;}else{state.pharmacy.medicines.push(data);} saveState(); renderAll(); closeModal('pharm-medicine-modal');});
+                
+                document.getElementById('create-supplier-btn').addEventListener('click', () => openModal('pharm-supplier-modal'));
+                 document.getElementById('suppliers-tbody').addEventListener('click', e => {
+                    const id = e.target.dataset.id; if (!id) return;
+                    if (e.target.classList.contains('edit-supplier-btn')) openModal('pharm-supplier-modal', state.pharmacy.suppliers.find(s => s.supplierId === id));
+                    if (e.target.classList.contains('delete-supplier-btn')) showConfirmationModal(`Delete this supplier?`, () => { state.pharmacy.suppliers = state.pharmacy.suppliers.filter(s => s.supplierId !== id); saveState(); renderAll(); });
+                });
+                 document.getElementById('pharm-supplier-form').addEventListener('submit', e => { e.preventDefault(); const id = document.getElementById('pharm-supplier-id').value; const isEditing = document.getElementById('pharm-supplier-id').disabled; const data={supplierId:id, companyName:document.getElementById('pharm-companyName').value, contactPerson:document.getElementById('pharm-contactPerson').value, phone:document.getElementById('pharm-phone').value, medicines:document.getElementById('pharm-medicines').value.split(',').map(s=>s.trim())}; if(isEditing){const i=state.pharmacy.suppliers.findIndex(s=>s.supplierId===id); state.pharmacy.suppliers[i]=data;}else{state.pharmacy.suppliers.push(data);} saveState(); renderAll(); closeModal('pharm-supplier-modal'); });
+
+
+                // Close modals
+                document.querySelectorAll('.modal-cancel-btn').forEach(btn => btn.addEventListener('click', () => {
+                     const modal = btn.closest('.modal-overlay');
+                     if(modal) closeModal(modal.id);
+                }));
+                 document.querySelectorAll('.modal-overlay').forEach(overlay => overlay.addEventListener('click', e => {
+                    if (e.target === overlay) closeModal(overlay.id);
+                 }));
+            }
+
+            // --- INITIALIZATION ---
+            function init() {
+                mountSections();
+                wireUI();
+                const activeTab = localStorage.getItem('active_hospital_tab') || 'dashboard';
+                showTab(activeTab);
+                renderAll();
+            }
+            document.addEventListener('DOMContentLoaded', init);
+        })();
+    </script>
+
+</body>
+</html>

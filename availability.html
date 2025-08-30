@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Availability</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffe6e6;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        
+        .availability-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            margin: auto;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #d32f2f;
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        li {
+            background-color: #f7f7f7;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        
+        li.donor {
+            border-left: 5px solid #4CAF50;
+            /* Green for donors */
+        }
+        
+        li.receiver {
+            border-left: 5px solid #f44336;
+            /* Red for receivers */
+        }
+        
+        li span {
+            font-weight: 600;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="availability-container">
+        <h2>Blood Availability</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Donors Column -->
+            <div>
+                <h3 class="text-2xl font-bold text-gray-700 mb-4 text-center border-b-2 border-green-500 pb-2">Donors</h3>
+                <ul id="donor-list">
+                    <!-- Donor list will be populated here -->
+                </ul>
+            </div>
+            <!-- Receivers Column -->
+            <div>
+                <h3 class="text-2xl font-bold text-gray-700 mb-4 text-center border-b-2 border-red-500 pb-2">Receivers</h3>
+                <ul id="receiver-list">
+                    <!-- Receiver list will be populated here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const donorList = JSON.parse(localStorage.getItem('donors')) || [];
+            const receiverList = JSON.parse(localStorage.getItem('receivers')) || [];
+
+            const donorListContainer = document.getElementById('donor-list');
+            const receiverListContainer = document.getElementById('receiver-list');
+
+            donorListContainer.innerHTML = '';
+            receiverListContainer.innerHTML = '';
+
+            // Populate Donors
+            if (donorList.length === 0) {
+                donorListContainer.innerHTML = '<li class="donor">No registered donors found.</li>';
+            } else {
+                donorList.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'donor';
+                    li.innerHTML = `
+                        <span>Name:</span> ${item.firstName} ${item.lastName}<br>
+                        <span>Blood Group:</span> ${item.bloodGroup}<br>
+                        <span>City:</span> ${item.city}<br>
+                        <span>Address:</span> ${item.address}<br>
+                        <span>Email:</span> ${item.email}<br>
+                        <span>Contact:</span> ${item.contact}
+                    `;
+                    donorListContainer.appendChild(li);
+                });
+            }
+
+            // Populate Receivers
+            if (receiverList.length === 0) {
+                receiverListContainer.innerHTML = '<li class="receiver">No registered receivers found.</li>';
+            } else {
+                receiverList.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'receiver';
+                    li.innerHTML = `
+                        <span>Name:</span> ${item.firstName} ${item.lastName}<br>
+                        <span>Blood Group:</span> ${item.bloodGroup}<br>
+                        <span>City:</span> ${item.city}<br>
+                        <span>Address:</span> ${item.address}<br>
+                        <span>Email:</span> ${item.email}<br>
+                        <span>Contact:</span> ${item.contact}
+                    `;
+                    receiverListContainer.appendChild(li);
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

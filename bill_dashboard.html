@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Dashboard - St. Seraphina's Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #a8a8a8;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Modal transitions */
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        
+        .hidden-modal {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .visible-modal {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content-transform {
+            transform: scale(0.95);
+        }
+
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <div class="hidden md:flex flex-col w-64 bg-white shadow-lg">
+            <div class="flex items-center justify-center h-20 shadow-md">
+                <h1 class="text-2xl font-bold text-blue-600">St. Seraphina's</h1>
+            </div>
+            <nav class="flex-1 px-2 py-4 space-y-2">
+                <a href="#" data-tab="overview" class="sidebar-link flex items-center px-4 py-2 text-gray-700 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Dashboard
+                </a>
+                <a href="#" data-tab="invoices" class="sidebar-link flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                     <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Invoices
+                </a>
+                <a href="#" data-tab="payments" class="sidebar-link flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Payments
+                </a>
+                <a href="#" class="flex items-center px-4 py-2 mt-auto text-gray-600 hover:bg-red-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex flex-col flex-1 overflow-y-auto">
+            <div class="flex items-center justify-between h-20 bg-white shadow-md px-6">
+                <h1 id="header-title" class="text-2xl font-semibold text-gray-800">Billing Dashboard</h1>
+                <span class="text-gray-600">Welcome, Billing Officer!</span>
+            </div>
+
+            <div class="p-6">
+                <!-- Tab content will be injected here by JavaScript -->
+                <div id="tabs-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Invoice Modal -->
+    <div id="invoice-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform">
+            <h2 id="invoice-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Create New Invoice</h2>
+            <form id="invoice-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="invoiceId" class="block text-sm font-medium text-gray-700">Invoice ID</label>
+                        <input type="text" id="invoiceId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="patientName" class="block text-sm font-medium text-gray-700">Patient Name</label>
+                        <input type="text" id="patientName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="amount" class="block text-sm font-medium text-gray-700">Amount (₹)</label>
+                        <input type="number" id="amount" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="dueDate" class="block text-sm font-medium text-gray-700">Due Date</label>
+                        <input type="date" id="dueDate" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                        <select id="status" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                            <option value="Pending">Pending</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Overdue">Overdue</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-8 pt-6 border-t flex justify-end space-x-3">
+                    <button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button>
+                    <button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Invoice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Payment Modal -->
+    <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform">
+            <h2 id="payment-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Record New Payment</h2>
+            <form id="payment-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="transactionId" class="block text-sm font-medium text-gray-700">Transaction ID</label>
+                        <input type="text" id="transactionId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="paymentPatientName" class="block text-sm font-medium text-gray-700">Patient Name</label>
+                        <input type="text" id="paymentPatientName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="paymentInvoiceId" class="block text-sm font-medium text-gray-700">Invoice ID</label>
+                        <input type="text" id="paymentInvoiceId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="paymentAmount" class="block text-sm font-medium text-gray-700">Amount (₹)</label>
+                        <input type="number" id="paymentAmount" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">Payment Date</label>
+                        <input type="date" id="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="method" class="block text-sm font-medium text-gray-700">Payment Method</label>
+                        <select id="method" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                            <option>Credit Card</option>
+                            <option>Bank Transfer</option>
+                            <option>UPI</option>
+                            <option>Cash</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="paymentStatus" class="block text-sm font-medium text-gray-700">Status</label>
+                        <select id="paymentStatus" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
+                            <option value="Success">Success</option>
+                            <option value="Failed">Failed</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-8 pt-6 border-t flex justify-end space-x-3">
+                    <button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button>
+                    <button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md p-6 modal-content modal-content-transform">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Are you sure?</h2>
+            <p id="confirmation-message" class="text-gray-600 mb-6">This action cannot be undone.</p>
+            <div class="flex justify-end space-x-3">
+                <button id="confirm-cancel-btn" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button>
+                <button id="confirm-action-btn" class="bg-red-600 text-white font-bold py-2 px-4 rounded-md hover:bg-red-700">Delete</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // Self-invoking function to encapsulate the entire application logic
+        (function() {
+            // --- STATE MANAGEMENT ---
+            const STORAGE_KEY = 'hospital_billing_app_state_v1';
+
+            // Default data to populate the app if no local storage is found
+            const defaultState = {
+                metrics: {
+                    revenue: 4500000,
+                    outstanding: 850000,
+                    invoicesToday: 32,
+                    paidToday: 210000
+                },
+                invoices: [
+                    { invoiceId: "INV-2025-08-001", patientName: "Rohan Verma", amount: 15000, dueDate: "2025-09-10", status: "Paid" },
+                    { invoiceId: "INV-2025-08-002", patientName: "Sunita Patil", amount: 7500, dueDate: "2025-09-12", status: "Overdue" },
+                    { invoiceId: "INV-2025-08-003", patientName: "Priya Sharma", amount: 2200, dueDate: "2025-09-15", status: "Pending" },
+                    { invoiceId: "INV-2025-08-004", patientName: "Amit Kumar", amount: 35000, dueDate: "2025-09-05", status: "Paid" },
+                     { invoiceId: "INV-2025-07-098", patientName: "Meena Desai", amount: 5800, dueDate: "2025-08-20", status: "Paid" },
+                    { invoiceId: "INV-2025-07-095", patientName: "Vikram Singh", amount: 12300, dueDate: "2025-08-18", status: "Pending" }
+                ],
+                payments: [
+                    { transactionId: "TXN-00125", patientName: "Rohan Verma", invoiceId: "INV-2025-08-001", amount: 15000, date: "2025-08-25", method: "Credit Card", status: "Success" },
+                    { transactionId: "TXN-00124", patientName: "Amit Kumar", invoiceId: "INV-2025-08-04", amount: 35000, date: "2025-08-24", method: "Bank Transfer", status: "Success" },
+                    { transactionId: "TXN-00123", patientName: "Sunita Patil", invoiceId: "INV-2025-08-002", amount: 7500, date: "2025-08-23", method: "UPI", status: "Failed" },
+                    { transactionId: "TXN-00122", patientName: "Meena Desai", invoiceId: "INV-2025-07-098", amount: 5800, date: "2025-08-22", method: "Cash", status: "Success" }
+                ]
+            };
+
+            let state = loadState();
+
+            function saveState() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                } catch (e) {
+                    console.warn('Could not save application state to localStorage:', e);
+                }
+            }
+
+            function loadState() {
+                try {
+                    const rawState = localStorage.getItem(STORAGE_KEY);
+                    return rawState ? JSON.parse(rawState) : JSON.parse(JSON.stringify(defaultState));
+                } catch (e) {
+                    console.warn('Failed to parse state from localStorage, using defaults:', e);
+                    return JSON.parse(JSON.stringify(defaultState));
+                }
+            }
+            
+            // --- UI TAB MANAGEMENT ---
+            function showTab(tabName) {
+                const tabs = ['overview', 'invoices', 'payments'];
+                const headerTitles = {
+                    overview: 'Billing Dashboard',
+                    invoices: 'Manage Invoices',
+                    payments: 'Payment History'
+                };
+
+                // Show/hide tab content
+                tabs.forEach(t => {
+                    const el = document.getElementById(`tab-${t}`);
+                    if (el) el.classList.toggle('hidden', t !== tabName);
+                });
+                
+                // Update header title
+                document.getElementById('header-title').textContent = headerTitles[tabName] || 'Dashboard';
+                
+                // Update active sidebar link
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    if (link.dataset.tab === tabName) {
+                        link.classList.add('bg-gray-200', 'text-gray-700');
+                        link.classList.remove('text-gray-600', 'hover:bg-gray-200');
+                    } else {
+                        link.classList.remove('bg-gray-200', 'text-gray-700');
+                        link.classList.add('text-gray-600', 'hover:bg-gray-200');
+                    }
+                });
+
+                localStorage.setItem('active_billing_tab', tabName);
+            }
+
+            // --- RENDER FUNCTIONS ---
+            function getStatusBadge(status) {
+                const styles = {
+                    'Paid': 'bg-green-200 text-green-800',
+                    'Pending': 'bg-yellow-200 text-yellow-800',
+                    'Overdue': 'bg-red-200 text-red-800',
+                    'Success': 'bg-green-200 text-green-800',
+                    'Failed': 'bg-red-200 text-red-800',
+                };
+                const style = styles[status] || 'bg-gray-200 text-gray-800';
+                return `<span class="${style} py-1 px-3 rounded-full text-xs font-medium">${status}</span>`;
+            }
+
+            function renderAll() {
+                renderOverview();
+                renderInvoicesTable(state.invoices);
+                renderPaymentsTable(state.payments);
+            }
+
+            function renderOverview() {
+                const { revenue, outstanding, invoicesToday, paidToday } = state.metrics;
+                document.getElementById('metric-revenue').textContent = `₹${revenue.toLocaleString('en-IN')}`;
+                document.getElementById('metric-outstanding').textContent = `₹${outstanding.toLocaleString('en-IN')}`;
+                document.getElementById('metric-invoices-today').textContent = invoicesToday;
+                document.getElementById('metric-paid-today').textContent = `₹${paidToday.toLocaleString('en-IN')}`;
+            }
+
+            function renderInvoicesTable(list) {
+                const tbody = document.getElementById('invoices-tbody');
+                tbody.innerHTML = '';
+                if (!list.length) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 py-4">No invoices found</td></tr>';
+                    return;
+                }
+                list.forEach(inv => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50';
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 border-b border-gray-200">${inv.invoiceId}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${inv.patientName}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">₹${inv.amount.toLocaleString('en-IN')}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${inv.dueDate}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${getStatusBadge(inv.status)}</td>
+                        <td class="py-3 px-4 border-b border-gray-200 space-x-2">
+                            <button class="edit-invoice-btn text-blue-500 hover:underline" data-id="${inv.invoiceId}">Edit</button>
+                            <button class="delete-invoice-btn text-red-500 hover:underline" data-id="${inv.invoiceId}">Delete</button>
+                        </td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function renderPaymentsTable(list) {
+                const tbody = document.getElementById('payments-tbody');
+                tbody.innerHTML = '';
+                if (!list.length) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-500 py-4">No payments found</td></tr>';
+                    return;
+                }
+                list.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50';
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 border-b border-gray-200">${p.transactionId}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.patientName}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.invoiceId}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">₹${p.amount.toLocaleString('en-IN')}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.date}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${p.method}</td>
+                        <td class="py-3 px-4 border-b border-gray-200">${getStatusBadge(p.status)}</td>
+                        <td class="py-3 px-4 border-b border-gray-200 space-x-2">
+                            <button class="edit-payment-btn text-blue-500 hover:underline" data-id="${p.transactionId}">Edit</button>
+                            <button class="delete-payment-btn text-red-500 hover:underline" data-id="${p.transactionId}">Delete</button>
+                        </td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+            
+            // --- MODAL MANAGEMENT ---
+            function openModal(modalId, data = null) {
+                const modal = document.getElementById(modalId);
+                const form = modal.querySelector('form');
+                form.reset();
+
+                if (modalId === 'invoice-modal') {
+                    if (data) { // Editing existing invoice
+                        document.getElementById('invoice-modal-title').textContent = 'Edit Invoice';
+                        document.getElementById('invoiceId').value = data.invoiceId;
+                        document.getElementById('invoiceId').disabled = true;
+                        document.getElementById('patientName').value = data.patientName;
+                        document.getElementById('amount').value = data.amount;
+                        document.getElementById('dueDate').value = data.dueDate;
+                        document.getElementById('status').value = data.status;
+                    } else { // Creating new invoice
+                        document.getElementById('invoice-modal-title').textContent = 'Create New Invoice';
+                        document.getElementById('invoiceId').disabled = false;
+                        document.getElementById('invoiceId').value = `INV-${Date.now()}`;
+                    }
+                } else if (modalId === 'payment-modal') {
+                     if (data) { // Editing existing payment
+                        document.getElementById('payment-modal-title').textContent = 'Edit Payment Record';
+                        document.getElementById('transactionId').value = data.transactionId;
+                        document.getElementById('transactionId').disabled = true;
+                        document.getElementById('paymentPatientName').value = data.patientName;
+                        document.getElementById('paymentInvoiceId').value = data.invoiceId;
+                        document.getElementById('paymentAmount').value = data.amount;
+                        document.getElementById('date').value = data.date;
+                        document.getElementById('method').value = data.method;
+                        document.getElementById('paymentStatus').value = data.status;
+                    } else { // Creating new payment
+                        document.getElementById('payment-modal-title').textContent = 'Record New Payment';
+                        document.getElementById('transactionId').disabled = false;
+                        document.getElementById('transactionId').value = `TXN-${Date.now()}`;
+                        document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+                    }
+                }
+
+                modal.classList.remove('hidden-modal');
+                setTimeout(() => {
+                    modal.querySelector('.modal-content').classList.remove('modal-content-transform');
+                    modal.classList.add('visible-modal');
+                }, 10);
+            }
+
+            function closeModal(modalId) {
+                const modal = document.getElementById(modalId);
+                modal.querySelector('.modal-content').classList.add('modal-content-transform');
+                modal.classList.remove('visible-modal');
+                setTimeout(() => modal.classList.add('hidden-modal'), 300);
+            }
+
+            function showConfirmationModal(message, onConfirm) {
+                 const modal = document.getElementById('confirmation-modal');
+                 document.getElementById('confirmation-message').textContent = message;
+                 
+                 const confirmBtn = document.getElementById('confirm-action-btn');
+                 const cancelBtn = document.getElementById('confirm-cancel-btn');
+
+                 // Clone and replace to remove old event listeners
+                 const newConfirmBtn = confirmBtn.cloneNode(true);
+                 confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+                 newConfirmBtn.addEventListener('click', () => {
+                     onConfirm();
+                     closeModal('confirmation-modal');
+                 });
+
+                 cancelBtn.onclick = () => closeModal('confirmation-modal');
+
+                 openModal('confirmation-modal');
+            }
+
+            // --- MOUNTING UI & EVENT WIRING ---
+            function mountSections() {
+                document.getElementById('tabs-container').innerHTML = `
+                    <div id="tab-overview"> 
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Total Revenue (Month)</h3><p id="metric-revenue" class="text-3xl font-bold text-green-600">₹0</p></div>
+                            <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Outstanding Payments</h3><p id="metric-outstanding" class="text-3xl font-bold text-red-600">₹0</p></div>
+                            <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Invoices Today</h3><p id="metric-invoices-today" class="text-3xl font-bold text-blue-600">0</p></div>
+                            <div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Paid Today</h3><p id="metric-paid-today" class="text-3xl font-bold text-purple-600">₹0</p></div>
+                        </div>
+                    </div>
+                    <div id="tab-invoices" class="hidden">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+                                <h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Invoices</h3>
+                                <div class="flex items-center space-x-4 w-full md:w-auto">
+                                    <input id="search-invoices" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <button id="create-invoice-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300 whitespace-nowrap">Create Invoice</button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2 border-gray-200">Invoice ID</th><th class="py-3 px-4 border-b-2 border-gray-200">Patient Name</th><th class="py-3 px-4 border-b-2 border-gray-200">Amount</th><th class="py-3 px-4 border-b-2 border-gray-200">Due Date</th><th class="py-3 px-4 border-b-2 border-gray-200">Status</th><th class="py-3 px-4 border-b-2 border-gray-200">Action</th></tr></thead><tbody id="invoices-tbody"></tbody></table></div>
+                        </div>
+                    </div>
+                    <div id="tab-payments" class="hidden">
+                         <div class="bg-white p-6 rounded-lg shadow-md">
+                            <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+                                <h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Transactions</h3>
+                                <div class="flex items-center space-x-4 w-full md:w-auto">
+                                    <input id="search-payments" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <button id="record-payment-btn" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 transition duration-300 whitespace-nowrap">Record Payment</button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2 border-gray-200">Transaction ID</th><th class="py-3 px-4 border-b-2 border-gray-200">Patient Name</th><th class="py-3 px-4 border-b-2 border-gray-200">Invoice ID</th><th class="py-3 px-4 border-b-2 border-gray-200">Amount</th><th class="py-3 px-4 border-b-2 border-gray-200">Date</th><th class="py-3 px-4 border-b-2 border-gray-200">Method</th><th class="py-3 px-4 border-b-2 border-gray-200">Status</th><th class="py-3 px-4 border-b-2 border-gray-200">Action</th></tr></thead><tbody id="payments-tbody"></tbody></table></div>
+                        </div>
+                    </div>`;
+            }
+
+            function wireUI() {
+                // Sidebar navigation
+                document.querySelector('.sidebar-link[data-tab]').parentElement.addEventListener('click', e => {
+                    if(e.target.closest('.sidebar-link')) {
+                        e.preventDefault();
+                        const tab = e.target.closest('.sidebar-link').dataset.tab;
+                        showTab(tab);
+                    }
+                });
+                
+                // Search functionality
+                document.getElementById('search-invoices').addEventListener('input', e => {
+                    const term = e.target.value.toLowerCase();
+                    const filtered = state.invoices.filter(inv => inv.invoiceId.toLowerCase().includes(term) || inv.patientName.toLowerCase().includes(term));
+                    renderInvoicesTable(filtered);
+                });
+
+                document.getElementById('search-payments').addEventListener('input', e => {
+                    const term = e.target.value.toLowerCase();
+                    const filtered = state.payments.filter(p => p.transactionId.toLowerCase().includes(term) || p.patientName.toLowerCase().includes(term));
+                    renderPaymentsTable(filtered);
+                });
+                
+                // Open modals
+                document.getElementById('create-invoice-btn').addEventListener('click', () => openModal('invoice-modal'));
+                document.getElementById('record-payment-btn').addEventListener('click', () => openModal('payment-modal'));
+                
+                // Close modals
+                document.querySelectorAll('.modal-cancel-btn').forEach(btn => btn.addEventListener('click', () => {
+                    closeModal('invoice-modal');
+                    closeModal('payment-modal');
+                }));
+                 document.querySelectorAll('.modal-overlay').forEach(overlay => overlay.addEventListener('click', e => {
+                    if (e.target === overlay) {
+                        closeModal('invoice-modal');
+                        closeModal('payment-modal');
+                        closeModal('confirmation-modal');
+                    }
+                 }));
+
+
+                // Invoice table actions (Edit/Delete)
+                document.getElementById('invoices-tbody').addEventListener('click', e => {
+                    const id = e.target.dataset.id;
+                    if (!id) return;
+                    if (e.target.classList.contains('edit-invoice-btn')) {
+                        const invoice = state.invoices.find(inv => inv.invoiceId === id);
+                        openModal('invoice-modal', invoice);
+                    }
+                    if (e.target.classList.contains('delete-invoice-btn')) {
+                        showConfirmationModal(`Are you sure you want to delete invoice ${id}?`, () => {
+                             state.invoices = state.invoices.filter(inv => inv.invoiceId !== id);
+                             saveState();
+                             renderInvoicesTable(state.invoices);
+                             // Optionally, re-calculate and render overview metrics here
+                        });
+                    }
+                });
+
+                // Payment table actions (Edit/Delete)
+                document.getElementById('payments-tbody').addEventListener('click', e => {
+                    const id = e.target.dataset.id;
+                    if (!id) return;
+                    if (e.target.classList.contains('edit-payment-btn')) {
+                        const payment = state.payments.find(p => p.transactionId === id);
+                        openModal('payment-modal', payment);
+                    }
+                    if (e.target.classList.contains('delete-payment-btn')) {
+                        showConfirmationModal(`Are you sure you want to delete transaction ${id}?`, () => {
+                            state.payments = state.payments.filter(p => p.transactionId !== id);
+                            saveState();
+                            renderPaymentsTable(state.payments);
+                        });
+                    }
+                });
+                
+                // Invoice form submission
+                document.getElementById('invoice-form').addEventListener('submit', e => {
+                    e.preventDefault();
+                    const id = document.getElementById('invoiceId').value;
+                    const isEditing = document.getElementById('invoiceId').disabled;
+                    const formData = {
+                        invoiceId: id,
+                        patientName: document.getElementById('patientName').value,
+                        amount: parseInt(document.getElementById('amount').value, 10),
+                        dueDate: document.getElementById('dueDate').value,
+                        status: document.getElementById('status').value
+                    };
+
+                    if (isEditing) {
+                        const index = state.invoices.findIndex(inv => inv.invoiceId === id);
+                        state.invoices[index] = formData;
+                    } else {
+                        if (state.invoices.some(inv => inv.invoiceId === id)) {
+                           showConfirmationModal('An invoice with this ID already exists. Do you want to overwrite it?', () => {
+                               const index = state.invoices.findIndex(inv => inv.invoiceId === id);
+                               state.invoices[index] = formData;
+                               saveState();
+                               renderInvoicesTable(state.invoices);
+                               closeModal('invoice-modal');
+                           });
+                           return; // prevent default addition
+                        }
+                        state.invoices.push(formData);
+                    }
+                    saveState();
+                    renderInvoicesTable(state.invoices);
+                    closeModal('invoice-modal');
+                });
+
+                // Payment form submission
+                document.getElementById('payment-form').addEventListener('submit', e => {
+                    e.preventDefault();
+                    const id = document.getElementById('transactionId').value;
+                    const isEditing = document.getElementById('transactionId').disabled;
+                    const formData = {
+                        transactionId: id,
+                        patientName: document.getElementById('paymentPatientName').value,
+                        invoiceId: document.getElementById('paymentInvoiceId').value,
+                        amount: parseInt(document.getElementById('paymentAmount').value, 10),
+                        date: document.getElementById('date').value,
+                        method: document.getElementById('method').value,
+                        status: document.getElementById('paymentStatus').value
+                    };
+                    
+                    if (isEditing) {
+                        const index = state.payments.findIndex(p => p.transactionId === id);
+                        state.payments[index] = formData;
+                    } else {
+                        state.payments.push(formData);
+                    }
+                    saveState();
+                    renderPaymentsTable(state.payments);
+                    closeModal('payment-modal');
+                });
+            }
+
+            // --- INITIALIZATION ---
+            function init() {
+                mountSections();
+                wireUI();
+                const activeTab = localStorage.getItem('active_billing_tab') || 'overview';
+                showTab(activeTab);
+                renderAll();
+            }
+
+            // Run the app
+            document.addEventListener('DOMContentLoaded', init);
+        })();
+    </script>
+
+</body>
+</html>

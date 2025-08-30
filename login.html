@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register - St. Seraphina's Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .form-container {
+            min-height: 100vh;
+            background-image: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <div class="form-container flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Sign in to your account
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Or <a href="register.html" class="font-medium text-blue-600 hover:text-blue-500"> create a new account </a>
+                </p>
+            </div>
+
+            <!-- Role Tabs -->
+            <div class="flex border-b border-gray-200">
+                <button id="patient-tab" class="role-tab flex-1 py-2 text-sm font-medium text-center text-blue-600 border-b-2 border-blue-600">Patient</button>
+                <button id="doctor-tab" class="role-tab flex-1 py-2 text-sm font-medium text-center text-gray-500 hover:text-gray-700">Doctor</button>
+                <button id="admin-tab" class="role-tab flex-1 py-2 text-sm font-medium text-center text-gray-500 hover:text-gray-700">Admin</button>
+                <button id="pharmacy-tab" class="role-tab flex-1 py-2 text-sm font-medium text-center text-gray-500 hover:text-gray-700">Pharmacy</button>
+            </div>
+
+            <!-- Login Form -->
+            <form class="mt-8 space-y-6" id="login-form" action="#" method="POST">
+                <input type="hidden" name="remember" value="true">
+                <input type="hidden" id="role" name="role" value="patient">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="email-address" class="sr-only">Email address</label>
+                        <input id="email-address" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Email address">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Password">
+                    </div>
+                </div>
+
+                <!-- Security Code Field -->
+                <div id="security-code-container" class="hidden">
+                    <label for="security-code" class="sr-only">4-Digit Security Code</label>
+                    <input id="security-code" name="security_code" type="password" maxlength="4" class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="">
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="text-sm">
+                        <a href="forgot_password.html" class="font-medium text-blue-600 hover:text-blue-500">
+                            Forgot your password?
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Sign in
+                    </button>
+                </div>
+                <div class="text-center">
+                    <a href="../home/index.html" class="font-medium text-sm text-blue-600 hover:text-blue-500">
+                        &larr; Back to Home
+                    </a>
+                </div>
+            </form>
+            <div id="login-status" class="mt-4 text-center text-sm"></div>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const loginStatus = document.getElementById('login-status');
+        const roleInput = document.getElementById('role');
+        const securityCodeContainer = document.getElementById('security-code-container');
+        const securityCodeInput = document.getElementById('security-code');
+        const tabs = [
+            document.getElementById('patient-tab'),
+            document.getElementById('doctor-tab'),
+            document.getElementById('admin-tab'),
+            document.getElementById('pharmacy-tab') // Added pharmacy tab
+        ];
+
+        tabs.forEach(selectedTab => {
+            selectedTab.addEventListener('click', () => {
+                tabs.forEach(tab => {
+                    if (tab === selectedTab) {
+                        tab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+                        tab.classList.remove('text-gray-500', 'hover:text-gray-700');
+                    } else {
+                        tab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                        tab.classList.add('text-gray-500', 'hover:text-gray-700');
+                    }
+                });
+                const currentRole = selectedTab.id.replace('-tab', '');
+                roleInput.value = currentRole;
+
+                // Show/hide and update placeholder for security code
+                if (currentRole === 'admin') {
+                    securityCodeContainer.classList.remove('hidden');
+                    securityCodeInput.placeholder = '4-Digit Admin Code';
+                } else if (currentRole === 'doctor') {
+                    securityCodeContainer.classList.remove('hidden');
+                    securityCodeInput.placeholder = '4-Digit Doctor Code';
+                } else if (currentRole === 'pharmacy') {
+                    securityCodeContainer.classList.remove('hidden');
+                    securityCodeInput.placeholder = '4-Digit Pharmacy Code';
+                } else {
+                    securityCodeContainer.classList.add('hidden');
+                }
+            });
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email-address').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const role = roleInput.value;
+
+            // Role-specific validation for security codes
+            if (role === 'admin' && securityCodeInput.value !== '4545') {
+                loginStatus.textContent = 'Incorrect Admin Code. Access denied.';
+                loginStatus.className = 'text-red-500';
+                return;
+            } else if (role === 'doctor' && securityCodeInput.value !== '5555') {
+                loginStatus.textContent = 'Incorrect Doctor Code. Access denied.';
+                loginStatus.className = 'text-red-500';
+                return;
+            } else if (role === 'pharmacy' && securityCodeInput.value !== '6565') {
+                loginStatus.textContent = 'Incorrect Pharmacy Code. Access denied.';
+                loginStatus.className = 'text-red-500';
+                return;
+            }
+
+            loginStatus.textContent = 'Logging in...';
+            loginStatus.className = 'text-gray-600';
+
+            setTimeout(() => {
+                const users = JSON.parse(localStorage.getItem('hospitalUsers')) || [];
+                const user = users.find(u => u.email.toLowerCase() === email);
+
+                if (user && user.password === password && user.role === role) {
+                    loginStatus.textContent = 'Login successful! Redirecting...';
+                    loginStatus.className = 'text-green-500';
+
+                    // Redirect based on role
+                    if (role === 'patient') {
+                        window.location.href = "../patient_dashboard/patient_dashboard.html";
+                    } else if (role === 'doctor') {
+                        window.location.href = "../doctor_dashboard/doctor_dashboard.html";
+                    } else if (role === 'admin') {
+                        window.location.href = "../admin_dashboard/admin_dashboard.html";
+                    } else if (role === 'pharmacy') {
+                        window.location.href = "../farmacy/farmacy.html";
+                    }
+                } else {
+                    loginStatus.textContent = 'Invalid email, password, or role.';
+                    loginStatus.className = 'text-red-500';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>

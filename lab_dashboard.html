@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management Dashboard - St. Seraphina's</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #a8a8a8;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Modal transitions */
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        
+        .hidden-modal {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .visible-modal {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content-transform {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <div class="hidden md:flex flex-col w-64 bg-white shadow-lg">
+            <div class="flex items-center justify-center h-20 shadow-md">
+                <h1 class="text-2xl font-bold text-blue-600">St. Seraphina's</h1>
+            </div>
+            <nav class="flex-1 px-2 py-4 space-y-2 overflow-y-auto">
+                
+
+                <p class="px-4 pt-4 pb-2 text-xs font-semibold text-gray-500 uppercase">Laboratory</p>
+                 <a href="#" data-tab="lab_overview" class="sidebar-link flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c.252 0 .487.02.718.057m-7.28 2.344a21.31 21.31 0 0113.805 0M4.28 5.498a21.31 21.31 0 0113.805 0M14.25 14.5l-2.25 2.25a2.25 2.25 0 00-1.591.659v5.714m-1.5-1.5l-2.25-2.25a2.25 2.25 0 01-.659-1.591V8.25m-1.5-1.5l2.25 2.25a2.25 2.25 0 001.591.659v5.714m0 0A21.284 21.284 0 0112 21a21.284 21.284 0 01-3-4.5m3 4.5V14.5"></path></svg>
+                    Overview
+                </a>
+                 <a href="#" data-tab="test_requests" class="sidebar-link flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m-1.125 9v5.25A2.25 2.25 0 009 21.75h5.25a2.25 2.25 0 002.25-2.25v-5.25m-7.5-3l-4.5-4.5m0 0l-1.5 1.5m1.5-1.5l1.5 1.5"></path></svg>
+                    Test Requests
+                </a>
+                <a href="#" data-tab="test_results" class="sidebar-link flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Results
+                </a>
+
+                <a href="#" class="flex items-center px-4 py-2 mt-auto text-gray-600 hover:bg-red-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex flex-col flex-1 overflow-y-auto">
+            <div class="flex items-center justify-between h-20 bg-white shadow-md px-6">
+                <h1 id="header-title" class="text-2xl font-semibold text-gray-800">Hospital Dashboard</h1>
+                <span class="text-gray-600">Welcome, Staff!</span>
+            </div>
+
+            <div class="p-6">
+                <div id="tabs-container"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- All Modals -->
+    <div id="invoice-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal"><div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform"><h2 id="invoice-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Create New Invoice</h2><form id="invoice-form"><div class="space-y-4"><div><label for="invoiceId" class="block text-sm font-medium text-gray-700">Invoice ID</label><input type="text" id="invoiceId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div><div><label for="patientName" class="block text-sm font-medium text-gray-700">Patient Name</label><input type="text" id="patientName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div><div><label for="amount" class="block text-sm font-medium text-gray-700">Amount (₹)</label><input type="number" id="amount" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div><div><label for="dueDate" class="block text-sm font-medium text-gray-700">Due Date</label><input type="date" id="dueDate" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div><div><label for="status" class="block text-sm font-medium text-gray-700">Status</label><select id="status" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required><option value="Pending">Pending</option><option value="Paid">Paid</option><option value="Overdue">Overdue</option></select></div></div><div class="mt-8 pt-6 border-t flex justify-end space-x-3"><button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Invoice</button></div></form></div></div>
+    <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal"><div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform"><h2 id="payment-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Record New Payment</h2><form id="payment-form"><div class="space-y-4"><div><label for="transactionId" class="block text-sm font-medium text-gray-700">Transaction ID</label><input type="text" id="transactionId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div><div><label for="paymentPatientName" class="block text-sm font-medium text-gray-700">Patient Name</label><input type="text" id="paymentPatientName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div><div><label for="paymentInvoiceId" class="block text-sm font-medium text-gray-700">Invoice ID</label><input type="text" id="paymentInvoiceId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div><div><label for="paymentAmount" class="block text-sm font-medium text-gray-700">Amount (₹)</label><input type="number" id="paymentAmount" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div><div><label for="date" class="block text-sm font-medium text-gray-700">Payment Date</label><input type="date" id="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></div><div><label for="method" class="block text-sm font-medium text-gray-700">Payment Method</label><select id="method" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required><option>Credit Card</option><option>Bank Transfer</option><option>UPI</option><option>Cash</option></select></div><div><label for="paymentStatus" class="block text-sm font-medium text-gray-700">Status</label><select id="paymentStatus" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required><option value="Success">Success</option><option value="Failed">Failed</option><option value="Pending">Pending</option></select></div></div><div class="mt-8 pt-6 border-t flex justify-end space-x-3"><button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Payment</button></div></form></div></div>
+    <div id="pharm-medicine-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal"><div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform"><h2 id="pharm-medicine-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Add New Medicine</h2><form id="pharm-medicine-form"><div class="space-y-4"><input type="hidden" id="pharm-medicine-id-hidden"><div><label for="pharm-name" class="block text-sm font-medium text-gray-700">Medicine Name</label><input type="text" id="pharm-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="pharm-qty" class="block text-sm font-medium text-gray-700">Quantity</label><input type="number" id="pharm-qty" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="pharm-expiry" class="block text-sm font-medium text-gray-700">Expiry Date</label><input type="date" id="pharm-expiry" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div></div><div class="mt-8 pt-6 border-t flex justify-end space-x-3"><button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Medicine</button></div></form></div></div>
+    <div id="pharm-supplier-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal"><div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform"><h2 id="pharm-supplier-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Add New Supplier</h2><form id="pharm-supplier-form"><div class="space-y-4"><div><label for="pharm-supplier-id" class="block text-sm font-medium text-gray-700">Supplier ID</label><input type="text" id="pharm-supplier-id" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="pharm-companyName" class="block text-sm font-medium text-gray-700">Company Name</label><input type="text" id="pharm-companyName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="pharm-contactPerson" class="block text-sm font-medium text-gray-700">Contact Person</label><input type="text" id="pharm-contactPerson" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="pharm-phone" class="block text-sm font-medium text-gray-700">Phone</label><input type="tel" id="pharm-phone" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="pharm-medicines" class="block text-sm font-medium text-gray-700">Medicines Provided (comma-separated)</label><textarea id="pharm-medicines" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"></textarea></div></div><div class="mt-8 pt-6 border-t flex justify-end space-x-3"><button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Supplier</button></div></form></div></div>
+    <div id="lab-request-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal"><div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content modal-content-transform"><h2 id="lab-modal-title" class="text-2xl font-bold text-gray-800 mb-6">Create New Test Request</h2><form id="lab-request-form"><div class="space-y-4"><div><label for="lab-requestId" class="block text-sm font-medium text-gray-700">Request ID</label><input type="text" id="lab-requestId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="lab-patientName" class="block text-sm font-medium text-gray-700">Patient Name</label><input type="text" id="lab-patientName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="lab-testType" class="block text-sm font-medium text-gray-700">Test Type</label><input type="text" id="lab-testType" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="lab-doctor" class="block text-sm font-medium text-gray-700">Requesting Doctor</label><input type="text" id="lab-doctor" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="lab-date" class="block text-sm font-medium text-gray-700">Date</label><input type="date" id="lab-date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required></div><div><label for="lab-status" class="block text-sm font-medium text-gray-700">Status</label><select id="lab-status" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required><option>Pending</option><option>In Progress</option><option>Completed</option></select></div></div><div class="mt-8 pt-6 border-t flex justify-end space-x-3"><button type="button" class="modal-cancel-btn bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Request</button></div></form></div></div>
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 modal-overlay hidden-modal"><div class="bg-white rounded-lg shadow-2xl w-full max-w-md p-6 modal-content modal-content-transform"><h2 class="text-xl font-bold text-gray-800 mb-4">Are you sure?</h2><p id="confirmation-message" class="text-gray-600 mb-6">This action cannot be undone.</p><div class="flex justify-end space-x-3"><button id="confirm-cancel-btn" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button><button id="confirm-action-btn" class="bg-red-600 text-white font-bold py-2 px-4 rounded-md hover:bg-red-700">Delete</button></div></div></div>
+    <input type="file" id="lab-pdf-uploader" class="hidden" accept=".pdf">
+    
+    <script>
+        (function() {
+            // --- UNIFIED STATE MANAGEMENT ---
+            const STORAGE_KEY = 'hospital_management_app_state_v2';
+
+            const defaultState = {
+                billing: {
+                    metrics: { revenue: 4500000, outstanding: 850000, invoicesToday: 32, paidToday: 210000 },
+                    invoices: [{ invoiceId: "INV-2025-08-001", patientName: "Rohan Verma", amount: 15000, dueDate: "2025-09-10", status: "Paid" },{ invoiceId: "INV-2025-08-002", patientName: "Sunita Patil", amount: 7500, dueDate: "2025-09-12", status: "Overdue" },],
+                    payments: [{ transactionId: "TXN-00125", patientName: "Rohan Verma", invoiceId: "INV-2025-08-001", amount: 15000, date: "2025-08-25", method: "Credit Card", status: "Success" }]
+                },
+                pharmacy: {
+                    metrics: { totalMedicines: 0, lowStock: 0, expired: 0, newPrescriptions: 0 },
+                    medicines: [{ id: 1, name: 'Paracetamol', qty: 100, expiry: '2025-12-31' },{ id: 2, name: 'Amoxicillin', qty: 8, expiry: '2026-06-15' }],
+                    prescriptions: [{ id: 'PRESC-001', patient: 'Rohan Verma', doctor: 'Dr. Anjali Rao', date: '2025-08-26', status: 'Pending', medicines: [] }],
+                    suppliers: [{ supplierId: 'SUP-001', companyName: 'Pharma Solutions Inc.', contactPerson: 'Mr. Sharma', phone: '+91 9988776655', medicines: ['Paracetamol'] }]
+                },
+                laboratory: {
+                     metrics: { pending: 22, completed: 45, new: 8 },
+                     requests: [
+                        { requestId: 'LAB501', patientName: 'Rohan Verma', testType: 'Complete Blood Count', doctor: 'Dr. Anjali Rao', date: '2025-08-26', status: 'Completed', fileUrl: '#', fileName: 'report.pdf' },
+                        { requestId: 'LAB502', patientName: 'Sunita Patil', testType: 'Lipid Profile', doctor: 'Dr. Vikram Singh', date: '2025-08-26', status: 'Pending', fileUrl: null, fileName: null },
+                        { requestId: 'LAB503', patientName: 'Priya Sharma', testType: 'Thyroid Function Test', doctor: 'Dr. Anjali Rao', date: '2025-08-25', status: 'In Progress', fileUrl: null, fileName: null }
+                    ]
+                }
+            };
+
+            let state = loadState();
+
+            function saveState() {
+                try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { console.warn('Could not save state:', e); }
+            }
+
+            function loadState() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultState));
+                } catch (e) {
+                    console.warn('Failed to parse state, using defaults:', e);
+                    return JSON.parse(JSON.stringify(defaultState));
+                }
+            }
+            
+            function showTab(tabName) {
+                const allTabs = ['dashboard', 'billing_overview', 'invoices', 'payments', 'pharmacy_overview', 'inventory', 'prescriptions', 'suppliers', 'lab_overview', 'test_requests', 'test_results'];
+                const headerTitles = {
+                    dashboard: 'Hospital Dashboard', billing_overview: 'Billing Overview', invoices: 'Manage Invoices', payments: 'Payment History',
+                    pharmacy_overview: 'Pharmacy Overview', inventory: 'Manage Inventory', prescriptions: 'Manage Prescriptions', suppliers: 'Manage Suppliers',
+                    lab_overview: 'Laboratory Overview', test_requests: 'Manage Test Requests', test_results: 'View Test Results'
+                };
+
+                allTabs.forEach(t => { const el = document.getElementById(`tab-${t}`); if (el) el.classList.toggle('hidden', t !== tabName); });
+                document.getElementById('header-title').textContent = headerTitles[tabName] || 'Dashboard';
+                document.querySelectorAll('.sidebar-link').forEach(link => {
+                    const isActive = link.dataset.tab === tabName;
+                    link.classList.toggle('bg-gray-200', isActive); link.classList.toggle('text-gray-700', isActive);
+                    link.classList.toggle('text-gray-600', !isActive); link.classList.toggle('hover:bg-gray-200', !isActive);
+                });
+                localStorage.setItem('active_hospital_tab', tabName);
+            }
+
+            function getStatusBadge(status) {
+                const styles = { 'Paid': 'bg-green-200 text-green-800', 'Pending': 'bg-yellow-200 text-yellow-800', 'Overdue': 'bg-red-200 text-red-800', 'Success': 'bg-green-200 text-green-800', 'Failed': 'bg-red-200 text-red-800', 'Filled': 'bg-green-200 text-green-800', 'In Progress': 'bg-blue-200 text-blue-800', 'Completed': 'bg-green-200 text-green-800'};
+                return `<span class="${styles[status] || 'bg-gray-200 text-gray-800'} py-1 px-3 rounded-full text-xs font-medium">${status}</span>`;
+            }
+
+            function renderAll() {
+                renderBillingOverview(); renderInvoicesTable(state.billing.invoices); renderPaymentsTable(state.billing.payments);
+                renderPharmacyMetrics(); renderMedicinesTable(state.pharmacy.medicines); renderPrescriptionsTable(state.pharmacy.prescriptions); renderSuppliersTable(state.pharmacy.suppliers);
+                renderLabMetrics(); renderTestRequestsTable(state.laboratory.requests); renderTestResultsTable(state.laboratory.requests.filter(r => r.status === 'Completed'));
+            }
+
+            function renderBillingOverview() { const { revenue, outstanding, invoicesToday, paidToday } = state.billing.metrics; document.getElementById('metric-revenue').textContent = `₹${revenue.toLocaleString('en-IN')}`; document.getElementById('metric-outstanding').textContent = `₹${outstanding.toLocaleString('en-IN')}`; document.getElementById('metric-invoices-today').textContent = invoicesToday; document.getElementById('metric-paid-today').textContent = `₹${paidToday.toLocaleString('en-IN')}`; }
+            function renderInvoicesTable(list) { const tbody = document.getElementById('invoices-tbody'); tbody.innerHTML = list.map(inv => `
+                    <tr class="hover:bg-gray-50"><td class="py-3 px-4 border-b">${inv.invoiceId}</td><td class="py-3 px-4 border-b">${inv.patientName}</td><td class="py-3 px-4 border-b">₹${inv.amount.toLocaleString('en-IN')}</td><td class="py-3 px-4 border-b">${inv.dueDate}</td><td class="py-3 px-4 border-b">${getStatusBadge(inv.status)}</td><td class="py-3 px-4 border-b space-x-2"><button class="edit-invoice-btn text-blue-500 hover:underline" data-id="${inv.invoiceId}">Edit</button><button class="delete-invoice-btn text-red-500 hover:underline" data-id="${inv.invoiceId}">Delete</button></td></tr>`).join('') || '<tr><td colspan="6" class="text-center text-gray-500 py-4">No invoices</td></tr>'; }
+            function renderPaymentsTable(list) { const tbody = document.getElementById('payments-tbody'); tbody.innerHTML = list.map(p => `
+                    <tr class="hover:bg-gray-50"><td class="py-3 px-4 border-b">${p.transactionId}</td><td class="py-3 px-4 border-b">${p.patientName}</td><td class="py-3 px-4 border-b">${p.invoiceId}</td><td class="py-3 px-4 border-b">₹${p.amount.toLocaleString('en-IN')}</td><td class="py-3 px-4 border-b">${p.date}</td><td class="py-3 px-4 border-b">${p.method}</td><td class="py-3 px-4 border-b">${getStatusBadge(p.status)}</td><td class="py-3 px-4 border-b space-x-2"><button class="edit-payment-btn text-blue-500 hover:underline" data-id="${p.transactionId}">Edit</button><button class="delete-payment-btn text-red-500 hover:underline" data-id="${p.transactionId}">Delete</button></td></tr>`).join('') || '<tr><td colspan="8" class="text-center text-gray-500 py-4">No payments</td></tr>'; }
+            function renderPharmacyMetrics() { const { medicines, prescriptions } = state.pharmacy; document.querySelector('[data-metric="totalMedicines"]').textContent = medicines.length; document.querySelector('[data-metric="lowStock"]').textContent = medicines.filter(m => m.qty < 10).length; document.querySelector('[data-metric="expired"]').textContent = medicines.filter(m => new Date(m.expiry) < new Date()).length; document.querySelector('[data-metric="newPrescriptions"]').textContent = prescriptions.filter(p => p.status === 'Pending').length; }
+            function renderMedicinesTable(list) { const tbody = document.getElementById('inventory-tbody'); tbody.innerHTML = list.map(m => `
+                    <tr class="hover:bg-gray-50"><td class="py-3 px-4 border-b">${m.name}</td><td class="py-3 px-4 border-b">${m.qty}</td><td class="py-3 px-4 border-b">${m.expiry}</td><td class="py-3 px-4 border-b space-x-2"><button class="edit-medicine-btn text-blue-500 hover:underline" data-id="${m.id}">Edit</button><button class="delete-medicine-btn text-red-500 hover:underline" data-id="${m.id}">Delete</button></td></tr>`).join('') || '<tr><td colspan="4" class="text-center text-gray-500 py-4">No medicines</td></tr>'; }
+            function renderPrescriptionsTable(list) { const tbody = document.getElementById('prescriptions-tbody'); tbody.innerHTML = list.map(p => `
+                    <tr class="hover:bg-gray-50"><td class="py-3 px-4 border-b">${p.id}</td><td class="py-3 px-4 border-b">${p.patient}</td><td class="py-3 px-4 border-b">${p.doctor}</td><td class="py-3 px-4 border-b">${p.date}</td><td class="py-3 px-4 border-b">${getStatusBadge(p.status)}</td><td class="py-3 px-4 border-b space-x-2"><button class="edit-prescription-btn text-blue-500 hover:underline" data-id="${p.id}">Edit</button><button class="delete-prescription-btn text-red-500 hover:underline" data-id="${p.id}">Delete</button></td></tr>`).join('') || '<tr><td colspan="6" class="text-center text-gray-500 py-4">No prescriptions</td></tr>'; }
+            function renderSuppliersTable(list) { const tbody = document.getElementById('suppliers-tbody'); tbody.innerHTML = list.map(s => `
+                     <tr class="hover:bg-gray-50"><td class="py-3 px-4 border-b">${s.supplierId}</td><td class="py-3 px-4 border-b">${s.companyName}</td><td class="py-3 px-4 border-b">${s.contactPerson}</td><td class="py-3 px-4 border-b">${s.phone}</td><td class="py-3 px-4 border-b space-x-2"><button class="edit-supplier-btn text-blue-500 hover:underline" data-id="${s.supplierId}">Edit</button><button class="delete-supplier-btn text-red-500 hover:underline" data-id="${s.supplierId}">Delete</button></td></tr>`).join('') || '<tr><td colspan="5" class="text-center text-gray-500 py-4">No suppliers</td></tr>'; }
+            function renderLabMetrics() { const { requests } = state.laboratory; document.querySelector('[data-metric="lab-pending"]').textContent = requests.filter(r => r.status === 'Pending' || r.status === 'In Progress').length; document.querySelector('[data-metric="lab-completed"]').textContent = requests.filter(r => r.status === 'Completed' && r.date === new Date().toISOString().slice(0,10)).length; document.querySelector('[data-metric="lab-new"]').textContent = requests.filter(r => r.date === new Date().toISOString().slice(0,10)).length; }
+            function renderTestRequestsTable(list) { const tbody = document.getElementById('lab-requests-tbody'); tbody.innerHTML = list.map(r => `
+                    <tr class="hover:bg-gray-50"><td class="py-3 px-4 border-b">${r.requestId}</td><td class="py-3 px-4 border-b">${r.patientName}</td><td class="py-3 px-4 border-b">${r.testType}</td><td class="py-3 px-4 border-b">${r.doctor}</td><td class="py-3 px-4 border-b">${r.date}</td><td class="py-3 px-4 border-b">${getStatusBadge(r.status)}</td><td class="py-3 px-4 border-b space-x-2"><button class="edit-request-btn text-blue-500 hover:underline" data-id="${r.requestId}">Edit</button><button class="delete-request-btn text-red-500 hover:underline" data-id="${r.requestId}">Delete</button></td></tr>`).join('') || '<tr><td colspan="7" class="text-center text-gray-500 py-4">No test requests</td></tr>'; }
+            function renderTestResultsTable(list) { const tbody = document.getElementById('lab-results-tbody'); tbody.innerHTML = list.map(r => `
+                     <tr class="hover:bg-gray-50"><td class="py-3 px-4 border-b">${r.requestId}</td><td class="py-3 px-4 border-b">${r.patientName}</td><td class="py-3 px-4 border-b">${r.testType}</td><td class="py-3 px-4 border-b">${r.date}</td><td class="py-3 px-4 border-b space-x-2">${r.fileUrl && r.fileUrl !== '#' ? `<a href="${r.fileUrl}" target="_blank" class="text-green-600 hover:underline">View Report</a>` : '<span class="text-gray-400">No Report</span>'}<button class="upload-report-btn text-purple-600 hover:underline" data-id="${r.requestId}">Upload</button></td></tr>`).join('') || '<tr><td colspan="5" class="text-center text-gray-500 py-4">No results</td></tr>';}
+
+            function openModal(modalId, data = null) {
+                const modal = document.getElementById(modalId); if (!modal) return;
+                const form = modal.querySelector('form'); if (form) form.reset();
+                if (modalId === 'invoice-modal') { document.getElementById('invoice-modal-title').textContent = data ? 'Edit Invoice' : 'Create New Invoice'; document.getElementById('invoiceId').disabled = !!data; document.getElementById('invoiceId').value = data ? data.invoiceId : `INV-${Date.now()}`; if(data) { document.getElementById('patientName').value = data.patientName; document.getElementById('amount').value = data.amount; document.getElementById('dueDate').value = data.dueDate; document.getElementById('status').value = data.status; } }
+                else if (modalId === 'payment-modal') { document.getElementById('payment-modal-title').textContent = data ? 'Edit Payment Record' : 'Record New Payment'; document.getElementById('transactionId').disabled = !!data; document.getElementById('transactionId').value = data ? data.transactionId : `TXN-${Date.now()}`; document.getElementById('date').value = data ? data.date : new Date().toISOString().slice(0, 10); if(data) { document.getElementById('paymentPatientName').value = data.patientName; document.getElementById('paymentInvoiceId').value = data.invoiceId; document.getElementById('paymentAmount').value = data.amount; document.getElementById('method').value = data.method; document.getElementById('paymentStatus').value = data.status; } }
+                else if (modalId === 'pharm-medicine-modal') { document.getElementById('pharm-medicine-modal-title').textContent = data ? 'Edit Medicine' : 'Add New Medicine'; document.getElementById('pharm-medicine-id-hidden').value = data ? data.id : ''; if(data){ document.getElementById('pharm-name').value = data.name; document.getElementById('pharm-qty').value = data.qty; document.getElementById('pharm-expiry').value = data.expiry; } }
+                else if (modalId === 'pharm-supplier-modal') { document.getElementById('pharm-supplier-modal-title').textContent = data ? 'Edit Supplier' : 'Add New Supplier'; document.getElementById('pharm-supplier-id').disabled = !!data; document.getElementById('pharm-supplier-id').value = data ? data.supplierId : `SUP-${Date.now()}`; if(data){ document.getElementById('pharm-companyName').value = data.companyName; document.getElementById('pharm-contactPerson').value = data.contactPerson; document.getElementById('pharm-phone').value = data.phone; document.getElementById('pharm-medicines').value = data.medicines.join(', '); } }
+                else if (modalId === 'lab-request-modal') { document.getElementById('lab-modal-title').textContent = data ? 'Edit Test Request' : 'Create New Test Request'; document.getElementById('lab-requestId').disabled = !!data; document.getElementById('lab-requestId').value = data ? data.requestId : `LAB-${Date.now()}`; if(data) { document.getElementById('lab-patientName').value = data.patientName; document.getElementById('lab-testType').value = data.testType; document.getElementById('lab-doctor').value = data.doctor; document.getElementById('lab-date').value = data.date; document.getElementById('lab-status').value = data.status; }}
+                modal.classList.remove('hidden-modal'); setTimeout(() => { modal.querySelector('.modal-content').classList.remove('modal-content-transform'); modal.classList.add('visible-modal'); }, 10);
+            }
+
+            function closeModal(modalId) { const modal = document.getElementById(modalId); if(!modal) return; modal.querySelector('.modal-content').classList.add('modal-content-transform'); modal.classList.remove('visible-modal'); setTimeout(() => modal.classList.add('hidden-modal'), 300); }
+            function showConfirmationModal(message, onConfirm) { const modal = document.getElementById('confirmation-modal'); document.getElementById('confirmation-message').textContent = message; const confirmBtn = document.getElementById('confirm-action-btn'); const newConfirmBtn = confirmBtn.cloneNode(true); confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn); newConfirmBtn.addEventListener('click', () => { onConfirm(); closeModal('confirmation-modal'); }); document.getElementById('confirm-cancel-btn').onclick = () => closeModal('confirmation-modal'); openModal('confirmation-modal'); }
+
+            function mountSections() {
+                const container = document.getElementById('tabs-container');
+                container.innerHTML = `
+                    <div id="tab-dashboard"><h2 class="text-2xl font-semibold text-gray-800 mb-4">Welcome to St. Seraphina's</h2><p class="text-gray-600">Select a module from the sidebar.</p></div>
+                    <div id="tab-billing_overview" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Total Revenue</h3><p id="metric-revenue" class="text-3xl font-bold text-green-600">₹0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Outstanding</h3><p id="metric-outstanding" class="text-3xl font-bold text-red-600">₹0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Invoices Today</h3><p id="metric-invoices-today" class="text-3xl font-bold text-blue-600">0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Paid Today</h3><p id="metric-paid-today" class="text-3xl font-bold text-purple-600">₹0</p></div></div></div>
+                    <div id="tab-invoices" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Invoices</h3><div class="flex items-center space-x-4 w-full md:w-auto"><input id="search-invoices" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border rounded-md"><button id="create-invoice-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Create Invoice</button></div></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">ID</th><th class="py-3 px-4 border-b-2">Patient</th><th class="py-3 px-4 border-b-2">Amount</th><th class="py-3 px-4 border-b-2">Due</th><th class="py-3 px-4 border-b-2">Status</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="invoices-tbody"></tbody></table></div></div></div>
+                    <div id="tab-payments" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Payments</h3><div class="flex items-center space-x-4 w-full md:w-auto"><input id="search-payments" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border rounded-md"><button id="record-payment-btn" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Record Payment</button></div></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">ID</th><th class="py-3 px-4 border-b-2">Patient</th><th class="py-3 px-4 border-b-2">Invoice</th><th class="py-3 px-4 border-b-2">Amount</th><th class="py-3 px-4 border-b-2">Date</th><th class="py-3 px-4 border-b-2">Method</th><th class="py-3 px-4 border-b-2">Status</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="payments-tbody"></tbody></table></div></div></div>
+                    <div id="tab-pharmacy_overview" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Total Medicines</h3><p class="text-3xl font-bold text-blue-600" data-metric="totalMedicines">0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Low Stock</h3><p class="text-3xl font-bold text-yellow-600" data-metric="lowStock">0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Expired</h3><p class="text-3xl font-bold text-red-600" data-metric="expired">0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">New Prescriptions</h3><p class="text-3xl font-bold text-green-600" data-metric="newPrescriptions">0</p></div></div></div>
+                    <div id="tab-inventory" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Medicines</h3><div class="flex items-center space-x-4 w-full md:w-auto"><input id="search-inventory" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border rounded-md"><button id="create-medicine-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Add Medicine</button></div></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">Name</th><th class="py-3 px-4 border-b-2">Qty</th><th class="py-3 px-4 border-b-2">Expiry</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="inventory-tbody"></tbody></table></div></div></div>
+                    <div id="tab-prescriptions" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Prescriptions</h3><div class="flex items-center space-x-4 w-full md:w-auto"><input id="search-prescriptions" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border rounded-md"><button id="create-prescription-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Add Prescription</button></div></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">ID</th><th class="py-3 px-4 border-b-2">Patient</th><th class="py-3 px-4 border-b-2">Doctor</th><th class="py-3 px-4 border-b-2">Date</th><th class="py-3 px-4 border-b-2">Status</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="prescriptions-tbody"></tbody></table></div></div></div>
+                    <div id="tab-suppliers" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Suppliers</h3><div class="flex items-center space-x-4 w-full md:w-auto"><input id="search-suppliers" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border rounded-md"><button id="create-supplier-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Add Supplier</button></div></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">ID</th><th class="py-3 px-4 border-b-2">Company</th><th class="py-3 px-4 border-b-2">Contact</th><th class="py-3 px-4 border-b-2">Phone</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="suppliers-tbody"></tbody></table></div></div></div>
+                    <div id="tab-lab_overview" class="hidden"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Pending Tests</h3><p class="text-3xl font-bold text-yellow-600" data-metric="lab-pending">0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">Completed Today</h3><p class="text-3xl font-bold text-green-600" data-metric="lab-completed">0</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-700">New Requests</h3><p class="text-3xl font-bold text-blue-600" data-metric="lab-new">0</p></div></div></div>
+                    <div id="tab-test_requests" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Test Requests</h3><div class="flex items-center space-x-4 w-full md:w-auto"><input id="search-requests" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border rounded-md"><button id="create-request-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Create Request</button></div></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">ID</th><th class="py-3 px-4 border-b-2">Patient</th><th class="py-3 px-4 border-b-2">Test</th><th class="py-3 px-4 border-b-2">Doctor</th><th class="py-3 px-4 border-b-2">Date</th><th class="py-3 px-4 border-b-2">Status</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="lab-requests-tbody"></tbody></table></div></div></div>
+                    <div id="tab-test_results" class="hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex flex-col md:flex-row justify-between items-center mb-4"><h3 class="text-xl font-semibold text-gray-700 mb-4 md:mb-0">All Test Results</h3><input id="search-results" type="text" placeholder="Search..." class="w-full md:w-64 px-4 py-2 border rounded-md"></div><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="text-gray-600 bg-gray-50"><th class="py-3 px-4 border-b-2">ID</th><th class="py-3 px-4 border-b-2">Patient</th><th class="py-3 px-4 border-b-2">Test</th><th class="py-3 px-4 border-b-2">Date</th><th class="py-3 px-4 border-b-2">Action</th></tr></thead><tbody id="lab-results-tbody"></tbody></table></div></div></div>
+                 `;
+            }
+
+            function wireUI() {
+                document.querySelector('nav').addEventListener('click', e => { const link = e.target.closest('.sidebar-link'); if(link && link.dataset.tab) { e.preventDefault(); showTab(link.dataset.tab); } });
+                document.getElementById('search-invoices').addEventListener('input', e => renderInvoicesTable(state.billing.invoices.filter(i => i.patientName.toLowerCase().includes(e.target.value.toLowerCase()))));
+                document.getElementById('search-payments').addEventListener('input', e => renderPaymentsTable(state.billing.payments.filter(p => p.patientName.toLowerCase().includes(e.target.value.toLowerCase()))));
+                document.getElementById('create-invoice-btn').addEventListener('click', () => openModal('invoice-modal'));
+                document.getElementById('record-payment-btn').addEventListener('click', () => openModal('payment-modal'));
+                document.getElementById('invoices-tbody').addEventListener('click', e => { const id = e.target.dataset.id; if (!id) return; if (e.target.classList.contains('edit-invoice-btn')) openModal('invoice-modal', state.billing.invoices.find(i => i.invoiceId === id)); if (e.target.classList.contains('delete-invoice-btn')) showConfirmationModal(`Delete invoice ${id}?`, () => { state.billing.invoices = state.billing.invoices.filter(i => i.invoiceId !== id); saveState(); renderInvoicesTable(state.billing.invoices); }); });
+                document.getElementById('payments-tbody').addEventListener('click', e => { const id = e.target.dataset.id; if (!id) return; if (e.target.classList.contains('edit-payment-btn')) openModal('payment-modal', state.billing.payments.find(p => p.transactionId === id)); if (e.target.classList.contains('delete-payment-btn')) showConfirmationModal(`Delete transaction ${id}?`, () => { state.billing.payments = state.billing.payments.filter(p => p.transactionId !== id); saveState(); renderPaymentsTable(state.billing.payments); }); });
+                document.getElementById('invoice-form').addEventListener('submit', e => { e.preventDefault(); const id = document.getElementById('invoiceId').value; const data = { invoiceId: id, patientName: document.getElementById('patientName').value, amount: parseInt(document.getElementById('amount').value), dueDate: document.getElementById('dueDate').value, status: document.getElementById('status').value }; if(document.getElementById('invoiceId').disabled){ const i=state.billing.invoices.findIndex(x=>x.invoiceId===id); state.billing.invoices[i]=data; }else{ state.billing.invoices.push(data); } saveState(); renderInvoicesTable(state.billing.invoices); closeModal('invoice-modal'); });
+                document.getElementById('payment-form').addEventListener('submit', e => { e.preventDefault(); const id = document.getElementById('transactionId').value; const data = { transactionId: id, patientName: document.getElementById('paymentPatientName').value, invoiceId: document.getElementById('paymentInvoiceId').value, amount: parseInt(document.getElementById('paymentAmount').value), date: document.getElementById('date').value, method: document.getElementById('method').value, status: document.getElementById('paymentStatus').value }; if(document.getElementById('transactionId').disabled){ const i=state.billing.payments.findIndex(x=>x.transactionId===id); state.billing.payments[i]=data; }else{ state.billing.payments.push(data); } saveState(); renderPaymentsTable(state.billing.payments); closeModal('payment-modal'); });
+                document.getElementById('search-inventory').addEventListener('input', e => renderMedicinesTable(state.pharmacy.medicines.filter(m => m.name.toLowerCase().includes(e.target.value.toLowerCase()))));
+                document.getElementById('create-medicine-btn').addEventListener('click', () => openModal('pharm-medicine-modal'));
+                document.getElementById('inventory-tbody').addEventListener('click', e => { const id = e.target.dataset.id; if (!id) return; if (e.target.classList.contains('edit-medicine-btn')) openModal('pharm-medicine-modal', state.pharmacy.medicines.find(m => m.id == id)); if (e.target.classList.contains('delete-medicine-btn')) showConfirmationModal(`Delete this medicine?`, () => { state.pharmacy.medicines = state.pharmacy.medicines.filter(m => m.id != id); saveState(); renderAll(); }); });
+                document.getElementById('pharm-medicine-form').addEventListener('submit', e => { e.preventDefault(); const id=document.getElementById('pharm-medicine-id-hidden').value; const data={id:id||Date.now(), name:document.getElementById('pharm-name').value, qty:parseInt(document.getElementById('pharm-qty').value), expiry:document.getElementById('pharm-expiry').value}; if(id){const i=state.pharmacy.medicines.findIndex(m=>m.id==id); state.pharmacy.medicines[i]=data;}else{state.pharmacy.medicines.push(data);} saveState(); renderAll(); closeModal('pharm-medicine-modal');});
+                document.getElementById('create-supplier-btn').addEventListener('click', () => openModal('pharm-supplier-modal'));
+                document.getElementById('suppliers-tbody').addEventListener('click', e => { const id = e.target.dataset.id; if (!id) return; if (e.target.classList.contains('edit-supplier-btn')) openModal('pharm-supplier-modal', state.pharmacy.suppliers.find(s => s.supplierId === id)); if (e.target.classList.contains('delete-supplier-btn')) showConfirmationModal(`Delete this supplier?`, () => { state.pharmacy.suppliers = state.pharmacy.suppliers.filter(s => s.supplierId !== id); saveState(); renderAll(); }); });
+                document.getElementById('pharm-supplier-form').addEventListener('submit', e => { e.preventDefault(); const id = document.getElementById('pharm-supplier-id').value; const data={supplierId:id, companyName:document.getElementById('pharm-companyName').value, contactPerson:document.getElementById('pharm-contactPerson').value, phone:document.getElementById('pharm-phone').value, medicines:document.getElementById('pharm-medicines').value.split(',').map(s=>s.trim())}; if(document.getElementById('pharm-supplier-id').disabled){const i=state.pharmacy.suppliers.findIndex(s=>s.supplierId===id); state.pharmacy.suppliers[i]=data;}else{state.pharmacy.suppliers.push(data);} saveState(); renderAll(); closeModal('pharm-supplier-modal'); });
+                document.getElementById('search-requests').addEventListener('input', e => renderTestRequestsTable(state.laboratory.requests.filter(r => r.patientName.toLowerCase().includes(e.target.value.toLowerCase()))));
+                document.getElementById('create-request-btn').addEventListener('click', () => openModal('lab-request-modal'));
+                document.getElementById('lab-requests-tbody').addEventListener('click', e => { const id = e.target.dataset.id; if (!id) return; if (e.target.classList.contains('edit-request-btn')) openModal('lab-request-modal', state.laboratory.requests.find(r => r.requestId === id)); if (e.target.classList.contains('delete-request-btn')) showConfirmationModal(`Delete request ${id}?`, () => { state.laboratory.requests = state.laboratory.requests.filter(r => r.requestId !== id); saveState(); renderAll(); }); });
+                document.getElementById('lab-request-form').addEventListener('submit', e => { e.preventDefault(); const id = document.getElementById('lab-requestId').value; const data = { requestId: id, patientName: document.getElementById('lab-patientName').value, testType: document.getElementById('lab-testType').value, doctor: document.getElementById('lab-doctor').value, date: document.getElementById('lab-date').value, status: document.getElementById('lab-status').value }; if(document.getElementById('lab-requestId').disabled){ const i=state.laboratory.requests.findIndex(r=>r.requestId===id); const oldData = state.laboratory.requests[i]; state.laboratory.requests[i]={...oldData, ...data}; } else { const newRequest = { ...data, fileUrl: null, fileName: null }; state.laboratory.requests.push(newRequest); } saveState(); renderAll(); closeModal('lab-request-modal');});
+                document.getElementById('lab-results-tbody').addEventListener('click', e => { if (e.target.classList.contains('upload-report-btn')) { const id = e.target.dataset.id; document.getElementById('lab-pdf-uploader').dataset.requestId = id; document.getElementById('lab-pdf-uploader').click(); }});
+                document.getElementById('lab-pdf-uploader').addEventListener('change', e => { const file = e.target.files[0]; const id = e.target.dataset.requestId; if (!file || !id) return; const idx = state.laboratory.requests.findIndex(r => r.requestId === id); if (idx === -1) return; state.laboratory.requests[idx].fileUrl = URL.createObjectURL(file); state.laboratory.requests[idx].fileName = file.name; state.laboratory.requests[idx].status = 'Completed'; saveState(); renderAll(); e.target.value = null; });
+                document.querySelectorAll('.modal-cancel-btn').forEach(btn => btn.addEventListener('click', () => { const modal = btn.closest('.modal-overlay'); if(modal) closeModal(modal.id); }));
+                document.querySelectorAll('.modal-overlay').forEach(overlay => overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(overlay.id); }));
+            }
+
+            function init() { mountSections(); wireUI(); const activeTab = localStorage.getItem('active_hospital_tab') || 'dashboard'; showTab(activeTab); renderAll(); }
+            document.addEventListener('DOMContentLoaded', init);
+        })();
+    </script>
+
+</body>
+</html>
+
