@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood-Drop</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@400;600&display=swap');
+        /* General Body Styles */
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffe6e6;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        
+        h1.main-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5em;
+            text-align: center;
+            color: #d32f2f;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        /* --- START OF UPDATED CAROUSEL STYLES --- */
+        
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 90vh;
+            /* Bada size, screen ki height ka 90% */
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .slides {
+            display: flex;
+            width: 200%;
+            /* Kyunki 2 slides hain */
+            height: 100%;
+            transition: transform 0.6s ease-in-out;
+        }
+        
+        .slide {
+            width: 50%;
+            /* Har slide container ka 50% legi */
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            /* Text aur image ke beech space */
+            padding: 50px;
+            box-sizing: border-box;
+        }
+        
+        .slide1 {
+            background: #fff5f5;
+        }
+        
+        .slide2 {
+            background: #f0f8ff;
+        }
+        
+        .text {
+            max-width: 50%;
+            text-align: left;
+        }
+        
+        .text h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4rem;
+            /* Font size bada kiya */
+            margin-bottom: 20px;
+            color: #d32f2f;
+        }
+        
+        .text p {
+            font-size: 1.5rem;
+            /* Paragraph ka font size bhi bada kiya */
+            margin-bottom: 30px;
+            color: #444;
+            line-height: 1.5;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            background: #e63946;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            /* Remove underline from link */
+            display: inline-block;
+            /* To allow padding and margin */
+        }
+        
+        .btn:hover {
+            background-color: #b71c1c;
+        }
+        
+        .image img {
+            max-width: 600px;
+            /* Image ka size aur bada kiya */
+            height: auto;
+            border-radius: 10px;
+        }
+        
+        .dots {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .dot {
+            width: 15px;
+            /* Dot ka size bada kiya */
+            height: 15px;
+            background: #bbb;
+            border-radius: 50%;
+            cursor: pointer;
+            /* Clickable look ke liye */
+            transition: background-color 0.3s ease;
+        }
+        
+        .dot.active {
+            background: #e63946;
+            /* Active dot ka color */
+        }
+        /* --- END OF UPDATED CAROUSEL STYLES --- */
+        /* Other styles remain the same... */
+        
+        .services-section {
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .services-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #d32f2f;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+        
+        .service-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+        
+        .service-card {
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative;
+            height: 200px;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            min-width: 300px;
+            max-width: 350px;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .service-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        
+        .service-card h3 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            z-index: 2;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            text-align: center;
+        }
+        
+        #about-card {
+            background-color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .learn-section {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .learn-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: #d32f2f;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+        
+        .blood-groups {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .blood-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 120px;
+        }
+        
+        .blood-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .blood-box h3 {
+            color: #d32f2f;
+            margin: 0;
+            font-size: 1.5em;
+        }
+        
+        #compatibility-card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .compatibility-card {
+            background-color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .compatibility-card h4 {
+            color: #d32f2f;
+            margin: 0 0 10px 0;
+            font-size: 1.5em;
+        }
+        
+        .compatibility-card p {
+            font-size: 1em;
+            color: #555;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero-section">
+        <h1 class="main-title">Blood-Drop</h1>
+        <div class="carousel">
+            <div class="slides" id="slides">
+                <div class="slide slide1">
+                    <div class="text">
+                        <h1>Donate Blood, Save Lives</h1>
+                        <p>Make a life-changing impact. Together, we can heal communities.</p>
+                        <a href="receiver.html" class="btn">BECOME A DONOR</a>
+                    </div>
+                    <div class="image">
+                        <img src="C:\Users\Admin\OneDrive\Desktop\Blood\quote1.jpg" alt="Blood Donation" height="600px" width="1000px">
+                    </div>
+                </div>
+                <div class="slide slide2">
+                    <div class="text">
+                        <h1>Every Drop Counts</h1>
+                        <p>Your donation can bring hope and health to someone in need today.</p>
+                        <a href="donor.html" class="btn">DONATE NOW</a>
+                    </div>
+                    <div class="image">
+                        <img src="C:\Users\Admin\OneDrive\Desktop\Blood\quote2.jpg" alt="A smiling blood donor" height="600px" width="1000px">
+                    </div>
+                </div>
+            </div>
+            <div class="dots">
+                <div class="dot active" onclick="moveToSlide(0)"></div>
+                <div class="dot" onclick="moveToSlide(1)"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+
+
+        <section class="services-section">
+            <h2>Our Services</h2>
+            <div class="service-container">
+                <a href="donor.html" class="service-card" style="background-image: url('donor.jpg.jpg'); background-position: -100px center;">
+                    <h3>Blood Donators</h3>
+                </a>
+                <a href=" receiver.html " class="service-card " style="background-image: url( 'receiver.jpg.jpg'); background-size:400px 300px; ">
+                    <h3>Blood Receivers</h3>
+                </a>
+                <a href="availability.html " class="service-card " style="background-image: url( 'availability.jpg.jpg');background-size:300px 250px; ">
+                    <h3>Blood Availability Search</h3>
+                </a>
+            </div>
+        </section>
+
+        <hr>
+
+        <section class="about-section-box ">
+            <div id="about-card ">
+                <a href="about.html " style="text-decoration: none; ">
+                    <h2 style="color: #d32f2f; ">About Blood-Drop</h2>
+                </a>
+                <p>Blood donation is a safe and noble act where a healthy person voluntarily donates about 350–450 ml of blood. This donated blood is separated into red blood cells, plasma, and platelets, which means a single donation can save up to three
+                    lives. Anyone between 18–65 years of age, weighing at least 45 kg, and in good health can donate.</p>
+            </div>
+        </section>
+        <hr>
+
+        <section class="learn-section">
+            <h2>Learn About Donation</h2>
+            <div class="blood-groups">
+                <div class="blood-box" onclick="showCompatibilityCard('A+')">
+                    <h3>A+</h3>
+                </div>
+                <div class="blood-box" onclick="showCompatibilityCard('A-')">
+                    <h3>A-</h3>
+                </div>
+                <div class="blood-box" onclick="showCompatibilityCard('B+')">
+                    <h3>B+</h3>
+                </div>
+                <div class="blood-box" onclick="showCompatibilityCard('B-')">
+                    <h3>B-</h3>
+                </div>
+                <div class="blood-box" onclick="showCompatibilityCard('AB+')">
+                    <h3>AB+</h3>
+                </div>
+                <div class="blood-box" onclick="showCompatibilityCard('AB-')">
+                    <h3>AB-</h3>
+                </div>
+                <div class="blood-box" onclick="showCompatibilityCard('O+')">
+                    <h3>O+</h3>
+                </div>
+                <div class="blood-box" onclick="showCompatibilityCard('O-')">
+                    <h3>O-</h3>
+                </div>
+            </div>
+            <div id="compatibility-card-container"></div>
+        </section>
+
+    </div>
+    <script>
+        // --- SLIDER SCRIPT ---
+        let currentSlide = 0;
+        const slides = document.getElementById("slides");
+        const dots = document.querySelectorAll(".dot");
+        const totalSlides = dots.length;
+        let autoSlideInterval;
+
+        function moveToSlide(index) {
+            clearInterval(autoSlideInterval);
+            if (slides) {
+                currentSlide = index;
+                slides.style.transform = `translateX(-${index * (100 / totalSlides)}%)`;
+            }
+            dots.forEach((dot, i) => {
+                dot.classList.toggle("active", i === index);
+            });
+            startAutoSlide();
+        }
+
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(() => {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                moveToSlide(currentSlide);
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (dots.length > 0) {
+                startAutoSlide();
+            }
+        });
+
+        // --- BLOOD GROUP COMPATIBILITY SCRIPT ---
+        const compatibilityData = {
+            'A+': {
+                'give': 'A+, AB+',
+                'receive': 'A+, A-, O+, O-'
+            },
+            'A-': {
+                'give': 'A+, A-, AB+, AB-',
+                'receive': 'A-, O-'
+            },
+            'B+': {
+                'give': 'B+, AB+',
+                'receive': 'B+, B-, O+, O-'
+            },
+            'B-': {
+                'give': 'B+, B-, AB+, AB-',
+                'receive': 'B-, O-'
+            },
+            'AB+': {
+                'give': 'AB+',
+                'receive': 'All blood types'
+            },
+            'AB-': {
+                'give': 'AB+, AB-',
+                'receive': 'AB-, A-, B-, O-'
+            },
+            'O+': {
+                'give': 'O+, A+, B+, AB+',
+                'receive': 'O+, O-'
+            },
+            'O-': {
+                'give': 'All blood types',
+                'receive': 'O-'
+            }
+        };
+
+        function showCompatibilityCard(bloodGroup) {
+            // Yahaan bhi ID se extra space hata diya gaya hai, taaki aage koi galti na ho
+            const container = document.getElementById('compatibility-card-container');
+            container.innerHTML = '';
+            const data = compatibilityData[bloodGroup];
+            const card = document.createElement('div');
+            card.classList.add('compatibility-card');
+            card.innerHTML = `
+            <h4>${bloodGroup} Compatibility</h4>
+            <p><strong>Can Give Blood To:</strong><br>${data.give}</p>
+            <p><strong>Can Receive Blood From:</strong><br>${data.receive}</p>
+        `;
+            container.appendChild(card);
+        }
+    </script>
+</body>
+
+</html>

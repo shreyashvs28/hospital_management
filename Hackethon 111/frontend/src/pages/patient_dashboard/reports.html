@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reports - St. Seraphina's Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for better aesthetics */
+        
+         ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+         ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+         ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+         ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Styles for the modal */
+        
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <div class="hidden md:flex flex-col w-64 bg-white shadow-lg">
+            <div class="flex items-center justify-center h-20 shadow-md">
+                <h1 class="text-2xl font-bold text-blue-600">St. Seraphina's</h1>
+            </div>
+            <nav class="flex-1 px-2 py-4 space-y-2">
+                <a href="patient_dashboard.html" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>                    Dashboard
+                </a>
+                <a href="appointments.html" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>                    Appointments
+                </a>
+                <a href="reports.html" class="flex items-center px-4 py-2 text-gray-700 bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>                    Reports
+                </a>
+                <a href="profile.html" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>                    Profile
+                </a>
+                <a href="../auth/login.html" class="flex items-center px-4 py-2 mt-auto text-gray-600 hover:bg-red-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>                    Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex flex-col flex-1 overflow-y-auto">
+            <div class="flex items-center justify-between h-20 bg-white shadow-md px-6">
+                <h1 class="text-2xl font-semibold text-gray-800">My Reports</h1>
+                <span class="text-gray-600">Welcome, Priya Sharma!</span>
+            </div>
+
+            <div class="p-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-700">Your Medical Reports</h3>
+                        <button id="add-report-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">Add New Report</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="text-gray-600">
+                                    <th class="py-2 px-4 border-b">Report ID</th>
+                                    <th class="py-2 px-4 border-b">Test Name</th>
+                                    <th class="py-2 px-4 border-b">Date</th>
+                                    <th class="py-2 px-4 border-b">Doctor</th>
+                                    <th class="py-2 px-4 border-b">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reports-table-body">
+                                <!-- Report rows will be dynamically inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Report Modal -->
+    <div id="report-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden modal-overlay">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 modal-content scale-95">
+            <h2 id="modal-title" class="text-2xl font-bold text-gray-800 mb-6">Add New Report</h2>
+            <form id="report-form">
+                <div class="space-y-4">
+                    <div>
+                        <label for="reportId" class="block text-sm font-medium text-gray-700">Report ID</label>
+                        <input type="text" id="reportId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="testName" class="block text-sm font-medium text-gray-700">Test Name</label>
+                        <input type="text" id="testName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                    <div>
+                        <label for="doctor" class="block text-sm font-medium text-gray-700">Doctor</label>
+                        <input type="text" id="doctor" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required>
+                    </div>
+                </div>
+                <div class="mt-8 pt-6 border-t flex justify-end space-x-3">
+                    <button type="button" id="cancel-btn" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-md hover:bg-gray-300">Cancel</button>
+                    <button type="submit" id="save-btn" class="bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700">Save Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // DOM Elements
+            const tableBody = document.getElementById("reports-table-body");
+            const addBtn = document.getElementById("add-report-btn");
+            const modal = document.getElementById("report-modal");
+            const cancelBtn = document.getElementById("cancel-btn");
+            const form = document.getElementById("report-form");
+            const modalTitle = document.getElementById("modal-title");
+            const saveBtn = document.getElementById("save-btn");
+
+            // App State
+            let reports = [{
+                reportId: "REP701",
+                testName: "Complete Blood Count (CBC)",
+                date: "2025-08-15",
+                doctor: "Dr. Anjali Rao"
+            }, {
+                reportId: "REP702",
+                testName: "X-Ray - Left Knee",
+                date: "2025-07-21",
+                doctor: "Dr. Vikram Singh"
+            }, {
+                reportId: "REP703",
+                testName: "Skin Biopsy",
+                date: "2025-06-13",
+                doctor: "Dr. Meena Desai"
+            }];
+            let editingReportId = null;
+
+            // --- Rendering Functions ---
+            function renderTable(data) {
+                tableBody.innerHTML = "";
+                data.forEach(r => {
+                    const row = `
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-2 px-4 border-b">${r.reportId}</td>
+                        <td class="py-2 px-4 border-b">${r.testName}</td>
+                        <td class="py-2 px-4 border-b">${r.date}</td>
+                        <td class="py-2 px-4 border-b">${r.doctor}</td>
+                        <td class="py-2 px-4 border-b space-x-2">
+                            <button class="edit-btn text-blue-600 hover:underline" data-id="${r.reportId}">Edit</button>
+                            <button class="delete-btn text-red-600 hover:underline" data-id="${r.reportId}">Delete</button>
+                        </td>
+                    </tr>
+                `;
+                    tableBody.insertAdjacentHTML('beforeend', row);
+                });
+            }
+
+            // --- Modal Handling ---
+            function openModal(reportToEdit = null) {
+                form.reset();
+                if (reportToEdit) {
+                    modalTitle.textContent = "Edit Report";
+                    saveBtn.textContent = "Update Report";
+                    editingReportId = reportToEdit.reportId;
+                    document.getElementById('reportId').value = reportToEdit.reportId;
+                    document.getElementById('reportId').disabled = true;
+                    document.getElementById('testName').value = reportToEdit.testName;
+                    document.getElementById('date').value = reportToEdit.date;
+                    document.getElementById('doctor').value = reportToEdit.doctor;
+                } else {
+                    modalTitle.textContent = "Add New Report";
+                    saveBtn.textContent = "Save Report";
+                    editingReportId = null;
+                    document.getElementById('reportId').disabled = false;
+                }
+                modal.classList.remove('hidden');
+            }
+
+            function closeModal() {
+                modal.classList.add('hidden');
+            }
+
+            // --- Event Listeners ---
+            addBtn.addEventListener("click", () => openModal());
+            cancelBtn.addEventListener("click", closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            tableBody.addEventListener('click', (e) => {
+                const reportId = e.target.dataset.id;
+                if (!reportId) return;
+
+                if (e.target.classList.contains('edit-btn')) {
+                    const reportToEdit = reports.find(r => r.reportId === reportId);
+                    openModal(reportToEdit);
+                }
+
+                if (e.target.classList.contains('delete-btn')) {
+                    if (confirm(`Are you sure you want to delete report ${reportId}?`)) {
+                        reports = reports.filter(r => r.reportId !== reportId);
+                        renderTable(reports);
+                    }
+                }
+            });
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const formData = {
+                    reportId: document.getElementById('reportId').value,
+                    testName: document.getElementById('testName').value,
+                    date: document.getElementById('date').value,
+                    doctor: document.getElementById('doctor').value
+                };
+
+                if (editingReportId) {
+                    const index = reports.findIndex(r => r.reportId === editingReportId);
+                    reports[index] = formData;
+                } else {
+                    if (reports.some(r => r.reportId === formData.reportId)) {
+                        alert('A report with this ID already exists.');
+                        return;
+                    }
+                    reports.push(formData);
+                }
+                renderTable(reports);
+                closeModal();
+            });
+
+            // Initial render
+            renderTable(reports);
+        });
+    </script>
+
+</body>
+
+</html>

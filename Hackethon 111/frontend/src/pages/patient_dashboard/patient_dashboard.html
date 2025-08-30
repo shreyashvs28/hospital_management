@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <memta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Patient Dashboard - St. Seraphina's Hospital</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'Inter', sans-serif;
+            }
+            /* Custom scrollbar for better aesthetics */
+            
+             ::-webkit-scrollbar {
+                width: 8px;
+            }
+            
+             ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+            }
+            
+             ::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 4px;
+            }
+            
+             ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+            
+            .modal-overlay {
+                transition: opacity 0.3s ease;
+            }
+            
+            .modal-content {
+                transition: transform 0.3s ease;
+            }
+        </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <div class="hidden md:flex flex-col w-64 bg-white shadow-lg">
+            <div class="flex items-center justify-center h-20 shadow-md">
+                <h1 class="text-2xl font-bold text-blue-600">St. Seraphina's</h1>
+            </div>
+            <nav class="flex-1 px-2 py-4 space-y-2">
+                <a href="patient_dashboard.html" class="flex items-center px-4 py-2 text-gray-700 bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>                    Dashboard
+                </a>
+                <a href="#appointments" data-view="appointments" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>                    Appointments
+                </a>
+                <a href="../Blood/blood.html" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round"    stroke-linejoin="round" stroke-width="2" d="M12 2.25c-5.18 0-9.42 4.01-9.42 8.94C2.58 16.12 12 22.5 12 22.5s9.42-6.38 9.42-11.31C21.42 6.26 17.18 2.25 12 2.25z"></path>
+    </svg> Blood
+                </a>
+                
+                <a href="#profile" data-view="profile" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>                    Profile
+                </a>
+                <a href="../auth/login.html" class="flex items-center px-4 py-2 mt-auto text-gray-600 hover:bg-red-200 rounded-md">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>                    Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <div class="flex flex-col flex-1 overflow-y-auto">
+            <div class="flex items-center justify-between h-20 bg-white shadow-md px-6">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-semibold text-gray-800 ml-4">Dashboard</h1>
+                </div>
+                <div class="flex items-center">
+                    <span id="welcome-name" class="text-gray-600 mr-4">Welcome, Patient!</span>
+                    <img class="w-10 h-10 rounded-full object-cover" src="https://placehold.co/100x100/a0aec0/ffffff?text=P" alt="User Avatar">
+                </div>
+            </div>
+
+            <div class="p-6">
+                <!-- Internal views: dashboard, appointments, reports, profile -->
+                <div id="view-dashboard" class="view-section">
+                    <!-- Summary Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div id="upcoming-appointment-card" class="bg-white p-6 rounded-lg shadow-md">
+                            <!-- Upcoming appointment details here -->
+                        </div>
+                        <div id="recent-report-card" class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-lg font-semibold text-gray-700 mb-2">Recent Lab Report</h3>
+                            <p class="text-gray-600"><strong>Test:</strong> Complete Blood Count (CBC)</p>
+                            <p class="text-gray-600"><strong>Date:</strong> 2025-08-15</p>
+                            <button id="view-latest-report" class="text-blue-500 hover:underline">View Report</button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity Table -->
+                    <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4">Appointment History</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="text-gray-600">
+                                        <th class="py-2 px-4 border-b">Patient Name</th>
+                                        <th class="py-2 px-4 border-b">Doctor</th>
+                                        <th class="py-2 px-4 border-b">Department</th>
+                                        <th class="py-2 px-4 border-b">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-table-body">
+                                    <!-- History rows here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-appointments" class="view-section hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-700">Book Appointment</h3>
+                            <div class="space-x-2">
+                                <button id="manage-doctors-btn" type="button" class="bg-gray-200 text-gray-800 font-medium py-2 px-3 rounded-md hover:bg-gray-300">Manage Doctors</button>
+                                <button id="open-booking-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">New Booking</button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="text-gray-600">
+                                        <th class="py-2 px-4 border-b">Doctor</th>
+                                        <th class="py-2 px-4 border-b">Date</th>
+                                        <th class="py-2 px-4 border-b">Time</th>
+                                        <th class="py-2 px-4 border-b">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="appointments-tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-reports" class="view-section hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-700">Your Medical Reports</h3>
+                            <button id="add-report-btn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700">Add New Report</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="text-gray-600">
+                                        <th class="py-2 px-4 border-b">Report ID</th>
+                                        <th class="py-2 px-4 border-b">Test Name</th>
+                                        <th class="py-2 px-4 border-b">Date</th>
+                                        <th class="py-2 px-4 border-b">Doctor</th>
+                                        <th class="py-2 px-4 border-b">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reports-table-body">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-profile" class="view-section hidden">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <form id="profile-form">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Personal Details -->
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Personal Details</h3>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="full-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                            <input type="text" id="profile-full-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                                        </div>
+                                        <div>
+                                            <label for="dob" class="block text-sm font-medium text-gray-700">Date of Birth</label>
+                                            <input type="date" id="profile-dob" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                                        </div>
+                                        <div>
+                                            <label for="gender" class="block text-sm font-medium text-gray-700">Gender</label>
+                                            <select id="profile-gender" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm">
+                                                <option>Female</option>
+                                                <option>Male</option>
+                                                <option>Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Contact Information -->
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Contact Information</h3>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="profile-email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                                            <input type="email" id="profile-email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                                        </div>
+                                        <div>
+                                            <label for="profile-phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                                            <input type="tel" id="profile-phone" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                                        </div>
+                                        <div>
+                                            <label for="profile-address" class="block text-sm font-medium text-gray-700">Address</label>
+                                            <textarea id="profile-address" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Medical Information -->
+                                <div class="md:col-span-2">
+                                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Medical Information</h3>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="profile-blood-group" class="block text-sm font-medium text-gray-700">Blood Group</label>
+                                            <input type="text" id="profile-blood-group" class="mt-1 block w-full md:w-1/4 px-3 py-2 border border-gray-300 rounded-md shadow-sm">
+                                        </div>
+                                        <div>
+                                            <label for="profile-allergies" class="block text-sm font-medium text-gray-700">Allergies</label>
+                                            <textarea id="profile-allergies" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6 text-right">
+                                <button type="submit" id="save-profile-btn" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div id="report-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden modal-overlay">
+        <div class="bg-white p-6 rounded-lg shadow-md max-w-lg w-full modal-content">
+            <h3 class="text-lg font-semibold mb-4">Add / Edit Report</h3>
+            <form id="report-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium">Report ID</label>
+                    <input id="reportId" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Test Name</label>
+                    <input id="testName" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">Date</label>
+                        <input id="report-date" type="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">Doctor</label>
+                        <input id="report-doctor" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                </div>
+                <div class="text-right space-x-2">
+                    <button type="button" id="cancel-btn" class="bg-gray-200 text-gray-800 py-2 px-4 rounded-md">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-md">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden modal-overlay">
+        <div class="bg-white p-8 rounded-lg shadow-md max-w-4xl mx-auto modal-content scale-95 max-h-full overflow-y-auto">
+            <h2 class="text-xl font-bold text-gray-800 mb-6">Book an Appointment</h2>
+            <form id="appointment-form" class="space-y-6">
+                <!-- Patient Details -->
+                <fieldset class="grid grid-cols-1 md:grid-cols-3 gap-4 border p-4 rounded-md">
+                    <legend class="text-lg font-semibold px-2">Personal Information</legend>
+                    <div>
+                        <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
+                        <input type="text" id="first-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="middle-name" class="block text-sm font-medium text-gray-700">Middle Name</label>
+                        <input type="text" id="middle-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                    </div>
+                    <div>
+                        <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                        <input type="text" id="last-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    </div>
+                </fieldset>
+
+                <!-- Health Details -->
+                <fieldset class="grid grid-cols-1 md:grid-cols-3 gap-4 border p-4 rounded-md">
+                    <legend class="text-lg font-semibold px-2">Health Details</legend>
+                    <div>
+                        <label for="blood-group" class="block text-sm font-medium text-gray-700">Blood Group</label>
+                        <select id="blood-group" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                            <option>A+</option> <option>A-</option> <option>B+</option> <option>B-</option>
+                            <option>AB+</option> <option>AB-</option> <option>O+</option> <option>O-</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="height" class="block text-sm font-medium text-gray-700">Height (cm)</label>
+                        <input type="number" id="height" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="weight" class="block text-sm font-medium text-gray-700">Weight (kg)</label>
+                        <input type="number" id="weight" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    </div>
+                </fieldset>
+
+                <!-- Symptoms and Disease -->
+                <fieldset class="border p-4 rounded-md">
+                    <legend class="text-lg font-semibold px-2">Symptoms & Disease</legend>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="disease" class="block text-sm font-medium text-gray-700">Disease (if known)</label>
+                            <select id="disease" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md">
+                                <option>Not Applicable</option><option>Hypertension</option><option>Diabetes</option><option>Asthma</option><option>Other</option>
+                            </select>
+                            <input type="text" id="other-disease" class="mt-2 hidden w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Please specify">
+                        </div>
+                        <div>
+                            <label for="symptoms" class="block text-sm font-medium text-gray-700">Symptoms</label>
+                            <textarea id="symptoms" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="e.g., Headache, fever, cough..." required></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Appointment Details -->
+                <fieldset class="grid grid-cols-1 md:grid-cols-3 gap-4 border p-4 rounded-md">
+                    <legend class="text-lg font-semibold px-2">Appointment Details</legend>
+                    <div>
+                        <label for="doctor" class="block text-sm font-medium text-gray-700">Doctor</label>
+                        <select id="doctor" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                            <option>Dr. Anjali Rao (Cardiology)</option>
+                            <option>Dr. Vikram Singh (Orthopedics)</option>
+                            <option>Dr. Meena Desai (Dermatology)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="date" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    </div>
+                    <div>
+                        <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
+                        <input type="time" id="time" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    </div>
+                </fieldset>
+
+                <!-- Contact and Captcha -->
+                <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-6 border p-4 rounded-md items-end">
+                    <legend class="text-lg font-semibold px-2">Contact & Verification</legend>
+                    <div>
+                        <label for="contact" class="block text-sm font-medium text-gray-700">Contact Number</label>
+                        <div class="mt-1 flex rounded-md shadow-sm">
+                            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">+91</span>
+                            <input type="tel" id="contact" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-gray-300" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email ID</label>
+                        <input type="email" id="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                    </div>
+                    <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                        <div>
+                            <label for="captcha-input" class="block text-sm font-medium text-gray-700">Enter Captcha</label>
+                            <div class="flex items-center mt-1">
+                                <div id="captcha-text" class="px-4 py-2 rounded-l-md bg-gray-200 text-xl font-bold select-none"></div>
+                                <button type="button" id="refresh-captcha" class="p-2 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 hover:bg-gray-100">
+                                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M20 4h-5v5M4 20h5v-5"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <input type="text" id="captcha-input" class="block w-full px-3 py-2 border border-gray-300 rounded-md" required>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Submit Button -->
+                <div class="text-right space-x-3">
+                    <button type="button" id="cancel-booking-btn" class="bg-gray-200 text-gray-800 font-bold py-3 px-6 rounded-lg hover:bg-gray-300">Cancel</button>
+                    <button type="submit" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700">Submit Appointment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const STORAGE_KEY = 'patient_dashboard_state_v1';
+
+            const defaultState = {
+                profile: { fullName: 'Patient', dob: '', gender: 'Female', email: '', phone: '', address: '', bloodGroup: '', allergies: '' },
+                appointments: [],
+                reports: [],
+                doctors: [
+                    'Dr. Anjali Rao (Cardiology)',
+                    'Dr. Vikram Singh (Orthopedics)',
+                    'Dr. Meena Desai (Dermatology)'
+                ]
+            };
+
+            function loadState() {
+                try { const raw = localStorage.getItem(STORAGE_KEY); if (raw) return JSON.parse(raw); } catch (e) { console.warn('loadState', e); }
+                return JSON.parse(JSON.stringify(defaultState));
+            }
+            function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { console.warn('saveState', e); } }
+
+            let state = loadState();
+
+            // Ensure doctors array exists
+            if (!state.doctors || !Array.isArray(state.doctors)) state.doctors = defaultState.doctors.slice();
+
+            // Views
+            const viewSections = document.querySelectorAll('.view-section');
+            function showView(name) {
+                viewSections.forEach(s => s.classList.add('hidden'));
+                const el = document.getElementById('view-' + name);
+                if (el) el.classList.remove('hidden');
+                // keep doctors up-to-date whenever views change
+                renderDoctors();
+                if (name === 'dashboard') renderDashboard();
+                if (name === 'appointments') renderAppointments();
+                if (name === 'reports') renderReports();
+                if (name === 'profile') renderProfile();
+            }
+            document.querySelectorAll('[data-view]').forEach(link => link.addEventListener('click', e => { e.preventDefault(); showView(link.dataset.view); }));
+
+            // --- Dashboard ---
+            const upcomingCard = document.getElementById('upcoming-appointment-card');
+            const historyTableBody = document.getElementById('history-table-body');
+            const welcomeName = document.getElementById('welcome-name');
+
+            function renderDashboard() {
+                const appointments = state.appointments || [];
+                const p = state.profile || {};
+                welcomeName.textContent = `Welcome, ${p.fullName || 'Patient'}!`;
+                const upcoming = appointments.filter(a => new Date(a.date) >= new Date());
+                const past = appointments.filter(a => new Date(a.date) < new Date());
+
+                if (upcoming.length) {
+                    const next = upcoming.sort((a,b)=>new Date(a.date)-new Date(b.date))[0];
+                    upcomingCard.innerHTML = `<h3 class="text-lg font-semibold text-gray-700 mb-2">Upcoming Appointment</h3><p class="text-gray-600"><strong>Doctor:</strong> ${next.doctor}</p><p class="text-gray-600"><strong>Date:</strong> ${next.date}</p><p class="text-gray-600"><strong>Time:</strong> ${next.time}</p>`;
+                } else {
+                    upcomingCard.innerHTML = `<h3 class="text-lg font-semibold text-gray-700 mb-2">No Upcoming Appointments</h3><p class="text-gray-500">You can book a new appointment from the appointments page.</p>`;
+                }
+
+                historyTableBody.innerHTML = '';
+                if (past.length) {
+                    past.forEach(h=>{ historyTableBody.insertAdjacentHTML('beforeend', `<tr class="hover:bg-gray-50"><td class="py-2 px-4 border-b">${h.patientName || p.fullName}</td><td class="py-2 px-4 border-b">${h.doctor}</td><td class="py-2 px-4 border-b">${h.department||'N/A'}</td><td class="py-2 px-4 border-b">${h.date}</td></tr>`); });
+                } else {
+                    historyTableBody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-gray-500">No past appointments found.</td></tr>`;
+                }
+            }
+
+            // --- Doctors management ---
+            function renderDoctors() {
+                const selects = document.querySelectorAll('#doctor');
+                selects.forEach(sel => {
+                    const current = sel.value;
+                    sel.innerHTML = '';
+                    (state.doctors || []).forEach(d => {
+                        const opt = document.createElement('option'); opt.value = d; opt.textContent = d; sel.appendChild(opt);
+                    });
+                    if (current) sel.value = current; // preserve selection if possible
+                });
+            }
+
+            document.getElementById('manage-doctors-btn').addEventListener('click', ()=>{
+                const list = (state.doctors||[]).join('\n');
+                const newList = prompt('Edit doctor list (one per line):', list);
+                if (newList === null) return;
+                const entries = newList.split('\n').map(s=>s.trim()).filter(Boolean);
+                state.doctors = entries;
+                saveState();
+                renderDoctors();
+                renderAppointments();
+                renderDashboard();
+                alert('Doctor list updated');
+            });
+
+            // --- Appointments view ---
+            const appointmentsTbody = document.getElementById('appointments-tbody');
+            document.getElementById('open-booking-btn').addEventListener('click', () => showBookingModal());
+
+            function renderAppointments() {
+                appointmentsTbody.innerHTML = '';
+                (state.appointments||[]).forEach(a=>{
+                    appointmentsTbody.insertAdjacentHTML('beforeend', `<tr class="hover:bg-gray-50"><td class="py-2 px-4 border-b">${a.doctor}</td><td class="py-2 px-4 border-b">${a.date}</td><td class="py-2 px-4 border-b">${a.time}</td><td class="py-2 px-4 border-b">${a.status||'Upcoming'}</td></tr>`);
+                });
+            }
+
+            // Booking modal (reuse existing markup if present)
+            let bookingModal = document.getElementById('booking-modal');
+            if (!bookingModal) {
+                // create a simple booking modal inline to avoid losing functionality
+                bookingModal = document.createElement('div');
+                bookingModal.id = 'booking-modal'; bookingModal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden modal-overlay';
+                bookingModal.innerHTML = `<div class="bg-white p-8 rounded-lg shadow-md max-w-4xl mx-auto modal-content scale-95 max-h-full overflow-y-auto"><h2 class="text-xl font-bold text-gray-800 mb-6">Book an Appointment</h2><form id="booking-form" class="space-y-6">...existing code...</form></div>`;
+                document.body.appendChild(bookingModal);
+            }
+
+            function showBookingModal() { bookingModal.classList.remove('hidden'); }
+            function hideBookingModal() { bookingModal.classList.add('hidden'); }
+
+            // If page has an appointment form (from original), wire it to state
+            const bookingForm = document.getElementById('appointment-form') || document.getElementById('booking-form');
+            if (bookingForm) {
+                bookingForm.addEventListener('submit', (e)=>{
+                    e.preventDefault();
+                    // gather minimal fields safely
+                    const first = document.getElementById('first-name') ? document.getElementById('first-name').value : '';
+                    const last = document.getElementById('last-name') ? document.getElementById('last-name').value : '';
+                    const patientFull = `${first} ${last}`.trim() || state.profile.fullName || 'Patient';
+                    const theDoctor = document.getElementById('doctor') ? document.getElementById('doctor').value : 'Unknown';
+                    const date = document.getElementById('date') ? document.getElementById('date').value : new Date().toISOString().split('T')[0];
+                    const time = document.getElementById('time') ? document.getElementById('time').value : '';
+                    const id = Date.now();
+                    const departmentMatch = (theDoctor.match(/\(([^)]+)\)/) || [])[1] || '';
+                    state.appointments.push({ id, patientName: patientFull, doctor: theDoctor, department: departmentMatch, date, time, status: 'Upcoming' });
+                    // update profile name if available
+                    if (first) { state.profile.fullName = `${first} ${last}`; }
+                    saveState(); hideBookingModal(); renderAppointments(); renderDashboard(); alert('Appointment booked');
+                });
+            }
+
+            // --- Reports view ---
+            const reportsTbody = document.getElementById('reports-table-body');
+            const reportModal = document.getElementById('report-modal');
+            const reportForm = document.getElementById('report-form');
+
+            document.getElementById('add-report-btn').addEventListener('click', ()=>{ if (reportModal) { reportModal.classList.remove('hidden'); document.getElementById('report-form').reset(); } });
+            if (reportModal) {
+                document.getElementById('cancel-btn').addEventListener('click', ()=>reportModal.classList.add('hidden'));
+                reportModal.addEventListener('click', (e)=>{ if (e.target===reportModal) reportModal.classList.add('hidden'); });
+            }
+
+            function renderReports() {
+                reportsTbody.innerHTML = '';
+                (state.reports||[]).forEach(r=>{ reportsTbody.insertAdjacentHTML('beforeend', `<tr class="hover:bg-gray-50"><td class="py-2 px-4 border-b">${r.reportId}</td><td class="py-2 px-4 border-b">${r.testName}</td><td class="py-2 px-4 border-b">${r.date}</td><td class="py-2 px-4 border-b">${r.doctor}</td><td class="py-2 px-4 border-b space-x-2"><button class="edit-report text-blue-600" data-id="${r.reportId}">Edit</button> <button class="delete-report text-red-600" data-id="${r.reportId}">Delete</button></td></tr>`); });
+            }
+
+            if (reportForm) {
+                reportForm.addEventListener('submit', (e)=>{
+                    e.preventDefault();
+                    const r = { reportId: document.getElementById('reportId').value, testName: document.getElementById('testName').value, date: document.getElementById('report-date').value, doctor: document.getElementById('report-doctor').value };
+                    const existing = state.reports.find(x=>x.reportId===r.reportId);
+                    if (existing) { state.reports = state.reports.map(x=>x.reportId===r.reportId? r : x); } else { state.reports.push(r); }
+                    saveState(); renderReports(); if (reportModal) reportModal.classList.add('hidden');
+                });
+            }
+
+            // report table delegation
+            reportsTbody.addEventListener('click', (e)=>{
+                const id = e.target.dataset.id; if (!id) return;
+                if (e.target.classList.contains('delete-report')) { if (confirm('Delete report '+id+'?')) { state.reports = state.reports.filter(r=>r.reportId!==id); saveState(); renderReports(); } }
+                if (e.target.classList.contains('edit-report')) { const r = state.reports.find(x=>x.reportId===id); if (r && reportModal) { document.getElementById('reportId').value=r.reportId; document.getElementById('reportId').disabled=true; document.getElementById('testName').value=r.testName; document.getElementById('report-date').value=r.date; document.getElementById('report-doctor').value=r.doctor; reportModal.classList.remove('hidden'); } }
+            });
+
+            // --- Profile ---
+            function renderProfile() {
+                const p = state.profile || {};
+                document.getElementById('profile-full-name').value = p.fullName || '';
+                document.getElementById('profile-dob').value = p.dob || '';
+                document.getElementById('profile-gender').value = p.gender || 'Female';
+                document.getElementById('profile-email').value = p.email || '';
+                document.getElementById('profile-phone').value = p.phone || '';
+                document.getElementById('profile-address').value = p.address || '';
+                document.getElementById('profile-blood-group').value = p.bloodGroup || '';
+                document.getElementById('profile-allergies').value = p.allergies || '';
+            }
+            document.getElementById('profile-form').addEventListener('submit', (e)=>{ e.preventDefault(); state.profile.fullName = document.getElementById('profile-full-name').value; state.profile.dob = document.getElementById('profile-dob').value; state.profile.gender = document.getElementById('profile-gender').value; state.profile.email = document.getElementById('profile-email').value; state.profile.phone = document.getElementById('profile-phone').value; state.profile.address = document.getElementById('profile-address').value; state.profile.bloodGroup = document.getElementById('profile-blood-group').value; state.profile.allergies = document.getElementById('profile-allergies').value; saveState(); renderProfile(); alert('Profile saved'); });
+
+            // init
+            renderDoctors();
+            showView('dashboard');
+
+            // Listen for cross-tab updates from admin (optional real-time sync)
+            try {
+                const bc = new BroadcastChannel('hospital-sync');
+                bc.addEventListener('message', (ev) => {
+                    try {
+                        const msg = ev.data || {};
+                        if (msg.type === 'doctors-updated' && Array.isArray(msg.doctors)) {
+                            state.doctors = msg.doctors.slice();
+                            saveState();
+                            renderDoctors();
+                            renderAppointments();
+                            renderDashboard();
+                        }
+                    } catch (e) { console.warn('bc patient handler', e); }
+                });
+            } catch (e) {
+                // BroadcastChannel unavailable — fine, fallback to reload-based sync
+            }
+        });
+    </script>
+
+</body>
+
+</html>

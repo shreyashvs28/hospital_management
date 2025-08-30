@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - St. Seraphina's Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .form-container {
+            min-height: 100vh;
+            background-image: linear-gradient(to top, #fbc2eb 0%, #a18cd1 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <div class="form-container flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Create a new account
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Already have an account? <a href="login.html" class="font-medium text-blue-600 hover:text-blue-500"> Sign in </a>
+                </p>
+            </div>
+
+            <!-- Registration Form -->
+            <form class="mt-8 space-y-6" id="register-form" action="#" method="POST">
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="full-name" class="sr-only">Full Name</label>
+                        <input id="full-name" name="name" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Full Name">
+                    </div>
+                    <div>
+                        <label for="email-address" class="sr-only">Email address</label>
+                        <input id="email-address" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Email address">
+                    </div>
+                    <div>
+                        <label for="role" class="sr-only">Role</label>
+                        <select id="role" name="role" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 bg-white placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm">
+                            <option value="" disabled selected>Register as...</option>
+                            <option value="patient">Patient</option>
+                            <option value="doctor">Doctor</option>
+                            <option value="admin">Admin</option>
+                            <option value="pharmacy">Pharmacy</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Password</label>
+                        <input id="password" name="password" type="password" autocomplete="new-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Password">
+                    </div>
+                    <div>
+                        <label for="confirm-password" class="sr-only">Confirm Password</label>
+                        <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                            placeholder="Confirm Password">
+                    </div>
+                </div>
+
+                <!-- Security Question Section -->
+                <div class="space-y-2 border-t pt-4">
+                    <label for="security-question" class="block text-sm font-medium text-gray-700">Choose a Security Question</label>
+                    <select id="security-question" name="security-question" required class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <option>What is your best friend's name?</option>
+                        <option>What is your favourite color?</option>
+                        <option>What is the name of your first school?</option>
+                        <option>What is your favourite movie?</option>
+                        <option>What is your favourite hobby?</option>
+                    </select>
+                    <input id="security-answer" name="security-answer" type="text" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm sm:text-sm" placeholder="Your Answer">
+                </div>
+
+
+                <div>
+                    <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Create Account
+                    </button>
+                </div>
+                <div class="text-center">
+                    <a href="../home/index.html" class="font-medium text-sm text-blue-600 hover:text-blue-500">
+                        &larr; Back to Home
+                    </a>
+                </div>
+            </form>
+            <div id="register-status" class="mt-4 text-center text-sm"></div>
+        </div>
+    </div>
+
+    <script>
+        const registerForm = document.getElementById('register-form');
+        const registerStatus = document.getElementById('register-status');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm-password');
+
+        // Handle form submission
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('full-name').value;
+            const email = document.getElementById('email-address').value;
+            const role = document.getElementById('role').value;
+            const securityQuestion = document.getElementById('security-question').value;
+            const securityAnswer = document.getElementById('security-answer').value;
+
+            // Basic validation
+            if (!name || !email || !role || !password.value || !confirmPassword.value || !securityQuestion || !securityAnswer) {
+                registerStatus.textContent = 'Please fill out all fields.';
+                registerStatus.className = 'text-red-500';
+                return;
+            }
+
+            if (password.value !== confirmPassword.value) {
+                registerStatus.textContent = 'Passwords do not match.';
+                registerStatus.className = 'text-red-500';
+                return;
+            }
+
+            registerStatus.textContent = 'Creating account...';
+            registerStatus.className = 'text-gray-600';
+
+            // Simulate saving user data to a database (using localStorage)
+            setTimeout(() => {
+                // Get existing users or initialize an empty array
+                const users = JSON.parse(localStorage.getItem('hospitalUsers')) || [];
+
+                // Check if user already exists
+                if (users.find(user => user.email === email)) {
+                    registerStatus.textContent = 'An account with this email already exists.';
+                    registerStatus.className = 'text-red-500';
+                    return;
+                }
+
+                // Add new user
+                users.push({
+                    name,
+                    email,
+                    role,
+                    password: password.value,
+                    securityQuestion,
+                    securityAnswer
+                });
+                localStorage.setItem('hospitalUsers', JSON.stringify(users));
+
+                // Redirect to the login page
+                window.location.href = 'login.html?registered=true';
+            }, 1500);
+        });
+    </script>
+</body>
+
+</html>

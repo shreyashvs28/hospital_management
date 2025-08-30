@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Services - St. Seraphina's Hospital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .emergency-header {
+            background-color: #ef4444;
+            /* Red-500 */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="../home/index.html" class="text-2xl font-bold text-blue-600">St. Seraphina's Hospital</a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="../home/index.html" class="text-gray-600 hover:text-blue-600 transition duration-300">Home</a>
+                <a href="../auth/login.html" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300">Login / Portal</a>
+            </div>
+            <a href="tel:+911234567890" class="md:hidden bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300">CALL NOW</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Emergency Header -->
+        <section class="emergency-header text-white text-center py-12">
+            <div class="container mx-auto px-6">
+                <h1 class="text-4xl md:text-5xl font-extrabold uppercase tracking-wider">Emergency Services</h1>
+                <p class="mt-2 text-lg">24/7 Critical Care & Ambulance Support</p>
+            </div>
+            <!-- Emergency Contacts -->
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Immediate Assistance</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                    <!-- ICU Contact -->
+                    <div class="bg-red-100 p-4 rounded-lg shadow-sm">
+                        <h3 class="font-semibold text-gray-700">ICU</h3>
+                        <a href="tel:+911234567891" class="block mt-2 text-lg font-bold text-red-600 hover:text-red-700">Call ICU</a>
+                    </div>
+
+                    <!-- Ward Contact -->
+                    <div class="bg-red-100 p-4 rounded-lg shadow-sm">
+                        <h3 class="font-semibold text-gray-700">Ward</h3>
+                        <a href="tel:+911234567892" class="block mt-2 text-lg font-bold text-red-600 hover:text-red-700">Call Ward</a>
+                    </div>
+
+                    <!-- Doctor on Duty -->
+                    <div class="bg-red-100 p-4 rounded-lg shadow-sm">
+                        <h3 class="font-semibold text-gray-700">Doctor on Duty</h3>
+                        <a href="tel:7410722782" class="block mt-2 text-lg font-bold text-red-600 hover:text-red-700">Call Doctor</a>
+                    </div>
+
+                    <!-- Admin Contact -->
+                    <div class="bg-red-100 p-4 rounded-lg shadow-sm">
+                        <h3 class="font-semibold text-gray-700">Admin</h3>
+                        <a href="tel:+911234567894" class="block mt-2 text-lg font-bold text-red-600 hover:text-red-700">Call Admin</a>
+                    </div>
+
+                    <!-- Pharmacy Contact -->
+                    <div class="bg-red-100 p-4 rounded-lg shadow-sm">
+                        <h3 class="font-semibold text-gray-700">Pharmacy</h3>
+                        <a href="tel:+911234567895" class="block mt-2 text-lg font-bold text-red-600 hover:text-red-700">Call Pharmacy</a>
+                    </div>
+
+                    <!-- Ambulance Dispatch -->
+                    <div class="bg-red-100 p-4 rounded-lg shadow-sm">
+                        <h3 class="font-semibold text-gray-700">Ambulance</h3>
+                        <a href="tel:+919876543210" class="block mt-2 text-lg font-bold text-red-600 hover:text-red-700">Call Ambulance</a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact & Ambulance Section -->
+        <section class="py-16">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <!-- Emergency Contacts -->
+                    <div class="text-center">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-6">Immediate Assistance</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-700">Emergency Helpline</h3>
+                                <a href="tel:+911234567890" class="text-4xl font-bold text-red-600 hover:text-red-700 transition duration-300">1800-123-4567</a>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-700">Ambulance Dispatch</h3>
+                                <a href="tel:+919876543210" class="text-4xl font-bold text-red-600 hover:text-red-700 transition duration-300">102-AMBULANCE</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Ambulance Call to Action -->
+                    <div class="bg-white p-8 rounded-lg shadow-lg text-center">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4">Need an Ambulance?</h2>
+                        <p class="text-gray-600 mb-6">Our fully-equipped ambulances are ready to be dispatched to your location immediately. Click the button below to call for an ambulance now.</p>
+                        <a href="tel:+919876543210" class="w-full md:w-auto inline-block bg-red-600 text-white font-bold py-4 px-8 rounded-lg text-xl hover:bg-red-700 transition duration-300 shadow-md">
+                            Call Ambulance Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Location Map -->
+        <section class="bg-white py-16">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Our Location</h2>
+                <div class="w-full h-96 bg-gray-200 rounded-lg shadow-md">
+                    <img src="https://placehold.co/1200x400/e2e8f0/4a5568?text=Hospital+Location+Map" alt="Hospital Location Map" class="w-full h-full object-cover rounded-lg">
+                </div>
+                <p class="text-center mt-4 text-gray-600">123 Health St, Pune, Maharashtra, India</p>
+            </div>
+        </section>
+
+        <!-- What to do in an Emergency -->
+        <section class="py-16">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">What To Do In An Emergency</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-600 mb-2">1. Stay Calm</h3>
+                        <p class="text-gray-600">Try to remain calm and assess the situation. Do not move the person if a neck or spine injury is suspected.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-600 mb-2">2. Call for Help</h3>
+                        <p class="text-gray-600">Call our emergency numbers immediately. Provide your location and a clear description of the emergency.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-xl font-bold text-blue-600 mb-2">3. Provide First Aid</h3>
+                        <p class="text-gray-600">If you are trained, provide basic first aid. Do not give the person anything to eat or drink.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2025 St. Seraphina's Hospital. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
